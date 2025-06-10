@@ -1,0 +1,25 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA routing - redirect all paths to index.html for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Explicitly handle the API routes (these should not be redirected to index.html)
+[[redirects]]
+  from = "/api/markdown-files"
+  to = "/api/markdown-files.json"
+  status = 200
+
+# Serve markdown files from public directory
+[[redirects]]
+  from = "/markdown/*"
+  to = "/markdown/:splat"
+  status = 200 

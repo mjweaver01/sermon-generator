@@ -6,7 +6,7 @@ export function markdownFilesPlugin(): Plugin {
   return {
     name: 'markdown-files',
     configureServer(server) {
-      // Add API endpoint for listing markdown files
+      // Add API endpoint for listing markdown files in development
       server.middlewares.use('/api/markdown-files', (req, res, next) => {
         if (req.method === 'GET') {
           try {
@@ -35,11 +35,17 @@ export function markdownFilesPlugin(): Plugin {
       })
     },
     generateBundle() {
-      // Generate the file list at build time
+      // Generate the file list at build time for production
       try {
         const markdownDir = path.join(process.cwd(), 'public', 'markdown')
         
         if (!fs.existsSync(markdownDir)) {
+          // Create empty files list if no markdown directory exists
+          this.emitFile({
+            type: 'asset',
+            fileName: 'api/markdown-files.json',
+            source: JSON.stringify([])
+          })
           return
         }
 
@@ -47,7 +53,9 @@ export function markdownFilesPlugin(): Plugin {
           .filter(file => file.endsWith('.md'))
           .sort()
 
-        // Emit the files list as a virtual asset that can be accessed at /api/markdown-files
+        console.log(`Found ${files.length} markdown files for production build:`, files)
+
+        // Emit the files list as a static JSON file
         this.emitFile({
           type: 'asset',
           fileName: 'api/markdown-files.json',
@@ -55,6 +63,12 @@ export function markdownFilesPlugin(): Plugin {
         })
       } catch (error) {
         console.error('Error generating markdown files list:', error)
+        // Don't fail the build, just emit an empty list
+        this.emitFile({
+          type: 'asset',
+          fileName: 'api/markdown-files.json',
+          source: JSON.stringify([])
+        })
       }
     }
   }

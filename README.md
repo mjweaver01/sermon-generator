@@ -11,6 +11,8 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
 
 ## Setup
 
+### Local Development
+
 1. **Install dependencies:**
    ```bash
    npm install
@@ -20,14 +22,26 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
    - Create a `.env` file in the project root
    - Add your OpenAI API key:
      ```
-     VITE_OPENAI_API_KEY=your_actual_openai_api_key_here
+     OPENAI_API_KEY=your_actual_openai_api_key_here
      ```
-   - The API key is now securely used on the server-side only
 
 3. **Start development server:**
    ```bash
    npm run dev
    ```
+
+### Netlify Deployment
+
+This app is configured for easy deployment on Netlify:
+
+1. **Connect your repository to Netlify**
+2. **Set environment variables in Netlify:**
+   - Go to Site settings > Environment variables
+   - Add: `OPENAI_API_KEY` with your OpenAI API key
+3. **Deploy:**
+   - Netlify will automatically build and deploy using the `netlify.toml` configuration
+   - The build command is `npm run build`
+   - The publish directory is `dist`
 
 ## Usage
 
