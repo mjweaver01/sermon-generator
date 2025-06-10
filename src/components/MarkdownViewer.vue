@@ -73,9 +73,6 @@ onMounted(() => {
 }
 
 .header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
   margin-bottom: 2rem;
   border-bottom: 1px solid #eee;
   padding-bottom: 1rem;
@@ -90,6 +87,8 @@ onMounted(() => {
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.3s ease;
+  margin-bottom: 1rem;
+  display: block;
 }
 
 .back-btn:hover {
@@ -99,7 +98,7 @@ onMounted(() => {
 .header h1 {
   margin: 0;
   color: #2c3e50;
-  flex: 1;
+  text-align: center;
 }
 
 .content {

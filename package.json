@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^24.0.0",
     "highlight.js": "^11.11.1",
     "marked": "^15.0.12",
+    "openai": "^5.3.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1"
   },
