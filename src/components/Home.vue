@@ -89,7 +89,9 @@ const loadMarkdownFiles = async () => {
 }
 
 const openMarkdown = (filename: string) => {
-  router.push(`/markdown/${filename}`)
+  // Remove .md extension from the filename for cleaner URLs
+  const nameWithoutExtension = filename.replace('.md', '')
+  router.push(`/markdown/${nameWithoutExtension}`)
 }
 
 const goToGenerator = () => {

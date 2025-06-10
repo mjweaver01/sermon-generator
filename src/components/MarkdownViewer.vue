@@ -1,8 +1,18 @@
 <template>
   <div class="markdown-viewer">
     <div class="header">
-      <button @click="goBack" class="back-btn">← Back to List</button>
-      <h1>{{ filename }}</h1>
+      <div class="header-nav">
+        <button @click="goBack" class="back-btn">← Back to List</button>
+        <!-- <h1>{{ filename }}</h1> -->
+        <div class="header-actions">
+          <button @click="viewRaw" class="action-btn">
+            🥩 View Raw
+          </button>
+          <button @click="downloadFile" class="action-btn download-btn">
+            📥 Download
+          </button>
+        </div>
+      </div>
     </div>
     
     <div class="content">
@@ -42,12 +52,30 @@ const goBack = () => {
   router.push('/')
 }
 
+const viewRaw = () => {
+  window.open(`/markdown/${props.filename}.md`, '_blank')
+}
+
+const downloadFile = () => {
+  if (!markdownContent.value) return
+  
+  const blob = new Blob([markdownContent.value], { type: 'text/markdown' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${props.filename}.md`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+
 const loadMarkdown = async () => {
   try {
     loading.value = true
     error.value = ''
     
-    const response = await fetch(`/markdown/${props.filename}`)
+    const response = await fetch(`/markdown/${props.filename}.md`)
     if (!response.ok) {
       throw new Error(`Failed to load ${props.filename}`)
     }
@@ -78,6 +106,19 @@ onMounted(() => {
   padding-bottom: 1rem;
 }
 
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .back-btn {
   background: #42b883;
   color: white;
@@ -87,8 +128,6 @@ onMounted(() => {
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.3s ease;
-  margin-bottom: 1rem;
-  display: block;
 }
 
 .back-btn:hover {
@@ -174,5 +213,28 @@ onMounted(() => {
   border-radius: 4px;
   overflow-x: auto;
   margin: 1rem 0;
+}
+
+.action-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.action-btn:hover {
+  background: #5a6268;
+}
+
+.download-btn {
+  background: #007bff;
+}
+
+.download-btn:hover {
+  background: #0056b3;
 }
 </style> 
