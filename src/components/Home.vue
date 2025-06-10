@@ -13,7 +13,14 @@
     </div>
     
     <h2>Saved Sermons</h2>
-    <div class="file-list">
+    <div v-if="loading" class="loading">Loading sermons...</div>
+    <div v-else-if="error" class="error">
+      <p>Error loading sermons: {{ error }}</p>
+    </div>
+    <div v-else-if="markdownFiles.length === 0" class="empty">
+      <p>No sermons found.</p>
+    </div>
+    <div v-else class="file-list">
       <div
         v-for="file in markdownFiles"
         :key="file.name"
@@ -28,23 +35,58 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// Define the markdown files available
-const markdownFiles = [
-  {
-    name: 'anthony.md',
-    display: 'Anthony Sermon',
-    description: 'Click to read the Anthony sermon'
-  },
-  {
-    name: 'anthony2.md',
-    display: 'Anthony Sermon 2',
-    description: 'Click to read the second Anthony sermon'
+interface MarkdownFile {
+  name: string
+  display: string
+  description: string
+}
+
+// Reactive reference for markdown files
+const markdownFiles = ref<MarkdownFile[]>([])
+const loading = ref(true)
+const error = ref('')
+
+// Function to generate display name from filename
+const generateDisplayName = (filename: string): string => {
+  // Remove .md extension and convert to title case
+  const nameWithoutExtension = filename.replace('.md', '')
+  
+  // Handle special cases and convert to readable format
+  return nameWithoutExtension
+    .split(/[-_]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ') + ' Sermon'
+}
+
+// Load markdown files dynamically using Node.js-powered API
+const loadMarkdownFiles = async () => {
+  try {
+    loading.value = true
+    error.value = ''
+    
+    const response = await fetch('/api/markdown-files')
+    if (!response.ok) {
+      throw new Error('Failed to load markdown file list')
+    }
+    
+    const filenames = await response.json()
+    markdownFiles.value = filenames.map((filename: string) => ({
+      name: filename,
+      display: generateDisplayName(filename),
+      description: `Click to read the ${generateDisplayName(filename).toLowerCase()}`
+    }))
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Unknown error'
+    console.error('Error loading markdown files:', err)
+  } finally {
+    loading.value = false
   }
-]
+}
 
 const openMarkdown = (filename: string) => {
   router.push(`/markdown/${filename}`)
@@ -53,6 +95,11 @@ const openMarkdown = (filename: string) => {
 const goToGenerator = () => {
   router.push('/generate')
 }
+
+// Load files when component mounts
+onMounted(() => {
+  loadMarkdownFiles()
+})
 </script>
 
 <style scoped>
@@ -131,5 +178,29 @@ h2 {
 .file-item p {
   margin: 0;
   color: #666;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #d63384;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.empty {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
 }
 </style> 

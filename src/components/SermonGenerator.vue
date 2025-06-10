@@ -73,7 +73,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
-import OpenAI from 'openai'
 
 const router = useRouter()
 
@@ -85,11 +84,6 @@ const filename = ref('')
 const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
-
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-})
 
 const goBack = () => {
   router.push('/')
@@ -104,40 +98,59 @@ const generateSermon = async () => {
   renderedSermon.value = ''
   
   try {
-    const systemPrompt = `
-      You are a passionate Protestant preacher. 
-      Craft a sermon in markdown format that speaks to the heart of the faithful. 
-      Use a dynamic, engaging preaching style with biblical references, and a powerful call to action. 
-      Ensure the sermon is biblically grounded, emotionally compelling, and relevant to contemporary Christian life.
-    `
-
-    const userPrompt = `${question.value.trim()}${biblicalContext.value.trim() ? '\n\nAdditional Biblical Context:\n' + biblicalContext.value.trim() : ''}`
-
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt
-        },
-        {
-          role: "user",
-          content: userPrompt
-        }
-      ],
-      temperature: 0.8,
-      max_tokens: 2048,
-      stream: true
+    const response = await fetch('/api/generate-sermon', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        question: question.value.trim(),
+        biblicalContext: biblicalContext.value.trim()
+      })
     })
 
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || 'Failed to generate sermon')
+    }
+
+    // Handle Server-Sent Events streaming
+    if (!response.body) {
+      throw new Error('No response body')
+    }
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
     let accumulatedContent = ''
-    
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content || ''
-      if (content) {
-        accumulatedContent += content
-        generatedSermon.value = accumulatedContent
-        renderedSermon.value = await marked(accumulatedContent)
+
+    while (true) {
+      const { done, value } = await reader.read()
+      
+      if (done) break
+
+      const chunk = decoder.decode(value, { stream: true })
+      const lines = chunk.split('\n')
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6))
+            
+            if (data.done) {
+              // Stream is complete
+              break
+            }
+            
+            if (data.content) {
+              accumulatedContent += data.content
+              generatedSermon.value = accumulatedContent
+              renderedSermon.value = await marked(accumulatedContent)
+            }
+          } catch (e) {
+            // Skip invalid JSON lines
+            continue
+          }
+        }
       }
     }
     

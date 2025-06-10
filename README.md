@@ -17,11 +17,12 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
    ```
 
 2. **Configure OpenAI API:**
-   - Copy `.env.example` to `.env`
+   - Create a `.env` file in the project root
    - Add your OpenAI API key:
      ```
      VITE_OPENAI_API_KEY=your_actual_openai_api_key_here
      ```
+   - The API key is now securely used on the server-side only
 
 3. **Start development server:**
    ```bash
@@ -38,8 +39,8 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
    - Save the result as a markdown file
 
 2. **View Saved Sermons:**
-   - Place your markdown files in the `public` directory
-   - Add them to the list in `src/components/Home.vue`
+   - Place your markdown files in the `public/markdown/` directory
+   - Files are automatically discovered and displayed on the home page
    - Click on any sermon from the home page to view it
 
 ## Technology Stack
