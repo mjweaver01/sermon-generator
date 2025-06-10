@@ -126,7 +126,7 @@ onMounted(() => {
 .header {
   position: relative;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem 2rem 3rem;
+  padding: 2rem;
   margin-bottom: 0;
   box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
   overflow: hidden;
@@ -494,7 +494,7 @@ onMounted(() => {
   }
 
   .header {
-    padding: 1.5rem 1rem 2rem;
+    padding: 1.5rem 1rem;
   }
 
   .header-nav {
@@ -537,6 +537,10 @@ onMounted(() => {
     margin: 1.5rem 0;
   }
 
+  .header-actions button {
+    width: 100%;
+  }
+
   .action-btn,
   .back-btn {
     font-size: 0.85rem;
@@ -550,8 +554,7 @@ onMounted(() => {
   }
 
   .header-actions {
-    flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 
   .action-btn,
