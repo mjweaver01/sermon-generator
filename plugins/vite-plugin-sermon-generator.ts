@@ -1,9 +1,12 @@
 import type { Plugin } from 'vite'
+import { loadEnv } from 'vite'
 
 export function sermonGeneratorPlugin(): Plugin {
   return {
     name: 'sermon-generator',
     configureServer(server) {
+      // Load environment variables
+      const env = loadEnv('', process.cwd(), '')
       // Add API endpoint for OpenAI sermon generation
       server.middlewares.use('/api/generate-sermon', async (req, res, next) => {
         if (req.method === 'POST') {
@@ -25,7 +28,7 @@ export function sermonGeneratorPlugin(): Plugin {
                 }
 
                 // Check for OpenAI API key
-                const apiKey = process.env.VITE_OPENAI_API_KEY || process.env.OPENAI_API_KEY
+                const apiKey = env.VITE_OPENAI_API_KEY || env.OPENAI_API_KEY
                 if (!apiKey) {
                   res.writeHead(500, { 'Content-Type': 'application/json' })
                   res.end(JSON.stringify({ error: 'OpenAI API key not configured' }))
