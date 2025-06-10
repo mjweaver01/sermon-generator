@@ -11,7 +11,7 @@
         <textarea
           id="question"
           v-model="question"
-          placeholder="Enter your question, concern, or topic for the sermon (e.g., 'I'm struggling with loss and need comfort')"
+          placeholder="Enter your question, concern, or topic for the sermon"
           rows="4"
           :disabled="loading"
         ></textarea>
