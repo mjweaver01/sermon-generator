@@ -100,6 +100,8 @@ const generateSermon = async () => {
   
   loading.value = true
   error.value = ''
+  generatedSermon.value = ''
+  renderedSermon.value = ''
   
   try {
     const systemPrompt = `
@@ -111,7 +113,7 @@ const generateSermon = async () => {
 
     const userPrompt = `${question.value.trim()}${biblicalContext.value.trim() ? '\n\nAdditional Biblical Context:\n' + biblicalContext.value.trim() : ''}`
 
-    const response = await openai.chat.completions.create({
+    const stream = await openai.chat.completions.create({
       model: "gpt-4.1-mini",
       messages: [
         {
@@ -124,16 +126,24 @@ const generateSermon = async () => {
         }
       ],
       temperature: 0.8,
-      max_tokens: 2048
+      max_tokens: 2048,
+      stream: true
     })
 
-    const sermonContent = response.choices[0]?.message?.content
-    if (!sermonContent) {
+    let accumulatedContent = ''
+    
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content || ''
+      if (content) {
+        accumulatedContent += content
+        generatedSermon.value = accumulatedContent
+        renderedSermon.value = await marked(accumulatedContent)
+      }
+    }
+    
+    if (!accumulatedContent) {
       throw new Error('No response generated')
     }
-
-    generatedSermon.value = sermonContent
-    renderedSermon.value = await marked(sermonContent)
     
     // Generate a default filename based on the question
     const defaultFilename = question.value
