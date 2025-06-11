@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Columbus",
+			"country": {
+				"code": "US",
+				"name": "United States"
+			},
+			"subdivision": {
+				"code": "OH",
+				"name": "Ohio"
+			},
+			"timezone": "America/New_York",
+			"latitude": 40.0818,
+			"longitude": -82.9665,
+			"postalCode": "43229"
+		},
+		"timestamp": 1749599520536
+	}
+}

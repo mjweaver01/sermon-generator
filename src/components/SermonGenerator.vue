@@ -119,8 +119,7 @@ const generateSermon = async () => {
   renderedSermon.value = ''
   
   try {
-    // Use Netlify Functions endpoint
-    const response = await fetch('/.netlify/functions/generate-sermon', {
+    const response = await fetch('/api/generate-sermon', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -136,15 +135,49 @@ const generateSermon = async () => {
       throw new Error(errorData.error || 'Failed to generate sermon')
     }
 
-    // Handle the complete response from Netlify Function
-    const data = await response.json()
-    
-    if (!data.content) {
-      throw new Error('No response generated')
+    // Handle Server-Sent Events streaming
+    if (!response.body) {
+      throw new Error('No response body')
+    }
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let accumulatedContent = ''
+
+    while (true) {
+      const { done, value } = await reader.read()
+      
+      if (done) break
+
+      const chunk = decoder.decode(value, { stream: true })
+      const lines = chunk.split('\n')
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6))
+            
+            if (data.done) {
+              // Stream is complete
+              break
+            }
+            
+            if (data.content) {
+              accumulatedContent += data.content
+              generatedSermon.value = accumulatedContent
+              renderedSermon.value = await marked(accumulatedContent)
+            }
+          } catch (e) {
+            // Skip invalid JSON lines
+            continue
+          }
+        }
+      }
     }
     
-    generatedSermon.value = data.content
-    renderedSermon.value = await marked(data.content)
+    if (!accumulatedContent) {
+      throw new Error('No response generated')
+    }
     
     // Generate a default filename based on the question
     const defaultFilename = question.value
