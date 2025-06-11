@@ -10,6 +10,10 @@
 [functions."markdown-files"]
   included_files = ["netlify/functions/markdown-files/markdown/**"]
 
+# Ensure markdown files are included with the markdown-content function
+[functions."markdown-content"]
+  included_files = ["netlify/functions/markdown-content/markdown/**"]
+
 # Redirect API routes to Netlify functions
 [[redirects]]
   from = "/api/*"
