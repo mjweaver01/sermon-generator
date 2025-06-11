@@ -39,6 +39,13 @@
             ></textarea>
           </div>
 
+          <div class="prefill-section">
+            <button @click="prefillExample" class="prefill-btn" :disabled="loading">
+              <span class="btn-icon">💡</span>
+              Prefill Example
+            </button>
+          </div>
+
           <button  
             @click="generateSermon" 
             :disabled="!question.trim() || loading"
@@ -108,6 +115,34 @@ const error = ref('')
 
 const goBack = () => {
   router.push('/')
+}
+
+const prefillExample = () => {
+  question.value = `
+  My brother just took his own life, and I am hoping he is in heaven watching over me. 
+  I know things happen for a reason but I am struggling to find strength, and am looking to the lord for help. 
+  Can you give me some guidance?
+  My name is Marissa.
+  My brother's name was Anthony.
+  `.trim()
+  biblicalContext.value = `
+  “Gam zu le tova" = “this too is for the best”
+  https://en.wikipedia.org/wiki/Nachum_Ish_Gamzu
+  “The LORD is near to the brokenhearted and saves the crushed in spirit.”
+  —Psalm 34:18 (ESV)
+  “Cast all your anxieties on him, because he cares for you.”
+  —1 Peter 5:7 (ESV)
+  “I am the resurrection and the life. Whoever believes in me, though he die, yet shall he live, and everyone who lives and believes in me shall never die.”
+  —John 11:25-26 (ESV)
+  “For I am sure that neither death nor life, nor angels nor rulers, nor things present nor things to come, nor powers, nor height nor depth, nor anything else in all creation, will be able to separate us from the love of God in Christ Jesus our Lord.”
+  —Romans 8:38-39 (ESV)
+  “For by grace you have been saved through faith. And this is not your own doing; it is the gift of God, not a result of works, so that no one may boast.”— Ephesians 2:8-9 (ESV)
+  “Truly, truly, I say to you, whoever hears my word and believes him who sent me has eternal life. He does not come into judgment, but has passed from death to life.”— John 5:24 (ESV)
+  “And we know that for those who love God all things work together for good, for those who are called according to his purpose.”
+  —Romans 8:28 (ESV)
+  “He will wipe away every tear from their eyes, and death shall be no more, neither shall there be mourning, nor crying, nor pain anymore, for the former things have passed away.”
+  —Revelation 21:4 (ESV)
+  `.trim()
 }
 
 const generateSermon = async () => {
@@ -364,6 +399,40 @@ const saveToFile = async () => {
   background-color: #f1f5f9;
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.prefill-section {
+  margin-bottom: 2rem;
+  text-align: right;
+}
+
+.prefill-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.prefill-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.prefill-btn:disabled {
+  background: linear-gradient(135deg, #94a3b8, #64748b);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2);
 }
 
 .generate-btn {
