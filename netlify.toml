@@ -2,6 +2,14 @@
   function = "generate-sermon"
   path = "/api/generate-sermon"
 
+# Functions configuration
+[functions]
+  directory = "netlify/functions"
+
+# Ensure markdown files are included with the markdown-files function
+[functions."markdown-files"]
+  included_files = ["netlify/functions/markdown-files/markdown/**"]
+
 # Redirect API routes to Netlify functions
 [[redirects]]
   from = "/api/*"

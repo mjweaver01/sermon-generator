@@ -29,21 +29,34 @@ export const handler = async (event: any, context: any) => {
   }
 
   try {
-    // Path to the markdown directory
-    const markdownDir = join(process.cwd(), 'public', 'markdown');
-    
+    // In Netlify serverless environment, use different path strategies
+    let markdownDir: string;
     let files: string[] = [];
     
-    try {
-      // Read the markdown directory using Node.js fs
-      const dirContents = await fs.readdir(markdownDir);
-      files = dirContents
-        .filter(file => file.endsWith('.md'))
-        .sort();
-    } catch (error) {
-      console.log('Could not read markdown directory:', error);
-      // Return empty array if directory doesn't exist or can't be read
-      files = [];
+    // Try different path approaches
+    const pathsToTry = [
+      // For local development
+      join(process.cwd(), 'public', 'markdown'),
+      // For Netlify serverless functions with included files
+      join(__dirname, 'markdown'),
+      // Alternative Netlify paths
+      process.env.LAMBDA_TASK_ROOT ? join(process.env.LAMBDA_TASK_ROOT, 'markdown-files', 'markdown') : null,
+      process.env.LAMBDA_TASK_ROOT ? join(process.env.LAMBDA_TASK_ROOT, 'markdown') : null,
+    ].filter(Boolean) as string[];
+    
+    for (const path of pathsToTry) {
+      try {
+        console.log(`Trying to read directory: ${path}`);
+        const dirContents = await fs.readdir(path);
+        files = dirContents
+          .filter(file => file.endsWith('.md'))
+          .sort();
+        console.log(`Found ${files.length} markdown files in ${path}`);
+        break; // Success, stop trying other paths
+      } catch (error) {
+        console.log(`Path ${path} failed:`, error.message);
+        continue; // Try next path
+      }
     }
     
     return {
