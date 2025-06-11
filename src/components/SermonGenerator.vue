@@ -40,6 +40,10 @@
           </div>
 
           <div class="prefill-section">
+            <button @click="clearForm" class="clear-btn" :disabled="loading || (!question.trim() && !biblicalContext.trim())">
+              <span class="btn-icon">🗑️</span>
+              Clear Form
+            </button>
             <button @click="prefillExample" class="prefill-btn" :disabled="loading">
               <span class="btn-icon">💡</span>
               Prefill Example
@@ -115,6 +119,15 @@ const error = ref('')
 
 const goBack = () => {
   router.push('/')
+}
+
+const clearForm = () => {
+  question.value = ''
+  biblicalContext.value = ''
+  generatedSermon.value = ''
+  renderedSermon.value = ''
+  filename.value = ''
+  error.value = ''
 }
 
 const prefillExample = () => {
@@ -404,6 +417,42 @@ const saveToFile = async () => {
 .prefill-section {
   margin-bottom: 2rem;
   text-align: right;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.clear-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  flex-grow: 1;
+  text-align: center;
+}
+
+.clear-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.clear-btn:disabled {
+  background: linear-gradient(135deg, #94a3b8, #64748b);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2);
+  opacity: 0.5;
 }
 
 .prefill-btn {
@@ -421,6 +470,8 @@ const saveToFile = async () => {
   gap: 0.5rem;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  flex-grow: 1;
+  text-align: center;
 }
 
 .prefill-btn:hover:not(:disabled) {
@@ -767,6 +818,10 @@ const saveToFile = async () => {
 
   .filename-group {
     min-width: auto;
+  }
+
+  .prefill-section {
+    justify-content: space-between;
   }
 
   .back-btn {
