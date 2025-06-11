@@ -97,7 +97,7 @@ const loadMarkdownFiles = async () => {
     loading.value = true
     error.value = ''
     
-    const response = await fetch('/api/markdown-files')
+    const response = await fetch('/api/markdown-content')
     if (!response.ok) {
       throw new Error('Failed to load markdown file list')
     }

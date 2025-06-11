@@ -6,13 +6,9 @@
 [functions]
   directory = "netlify/functions"
 
-# Ensure markdown files are included with the markdown-files function
-[functions."markdown-files"]
-  included_files = ["netlify/functions/markdown-files/markdown/**"]
-
-# Ensure markdown files are included with the markdown-content function
+# Include markdown files for the unified function
 [functions."markdown-content"]
-  included_files = ["netlify/functions/markdown-content/markdown/**"]
+  included_files = ["netlify/functions/markdown-files/**"]
 
 # Redirect API routes to Netlify functions
 [[redirects]]

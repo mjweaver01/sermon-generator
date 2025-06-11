@@ -31,15 +31,59 @@ export const handler = async (event: any, context: any) => {
   // Get filename from query string
   const filename = event.queryStringParameters?.filename;
   
+  // If no filename provided, return list of available files
   if (!filename) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ error: "Filename parameter is required" })
-    };
+    try {
+      const pathsToTry = [
+        // For local development
+        join(process.cwd(), 'public', 'markdown'),
+        // For local netlify dev environment
+        join(process.cwd(), 'netlify', 'functions', 'markdown-files'),
+        // For Netlify serverless functions with included files
+        join(__dirname, '..', 'markdown-files'),
+        join(__dirname),
+        // Alternative Netlify paths
+        process.env.LAMBDA_TASK_ROOT ? join(process.env.LAMBDA_TASK_ROOT, 'markdown-files') : null,
+        process.env.LAMBDA_TASK_ROOT ? join(process.env.LAMBDA_TASK_ROOT) : null,
+      ].filter(Boolean) as string[];
+      
+      let files: string[] = [];
+      
+      for (const path of pathsToTry) {
+        try {
+          console.log(`Trying to read directory: ${path}`);
+          const dirContents = await fs.readdir(path);
+          files = dirContents
+            .filter(file => file.endsWith('.md'))
+            .sort();
+          console.log(`Found ${files.length} markdown files in ${path}`);
+          break; // Success, stop trying other paths
+        } catch (error: any) {
+          console.log(`Path ${path} failed:`, error.message);
+          continue; // Try next path
+        }
+      }
+      
+      return {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Cache-Control": "public, max-age=300"
+        },
+        body: JSON.stringify(files)
+      };
+    } catch (error) {
+      console.error('Error reading markdown files:', error);
+      return {
+        statusCode: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        },
+        body: JSON.stringify({ error: "Failed to read markdown files" })
+      };
+    }
   }
 
   // Ensure filename ends with .md
@@ -51,12 +95,13 @@ export const handler = async (event: any, context: any) => {
       // For local development
       join(process.cwd(), 'public', 'markdown', fullFilename),
       // For local netlify dev environment
-      join(process.cwd(), 'netlify', 'functions', 'markdown-content', 'markdown', fullFilename),
-      // For Netlify serverless functions with included files
-      join(__dirname, 'markdown', fullFilename),
+      join(process.cwd(), 'netlify', 'functions', 'markdown-files', fullFilename),
+      // For Netlify serverless functions with included files - try markdown-files directory
+      join(__dirname, '..', 'markdown-files', fullFilename),
+      join(__dirname, fullFilename),
       // Alternative Netlify paths
-      process.env.LAMBDA_TASK_ROOT ? join(process.env.LAMBDA_TASK_ROOT, 'markdown-content', 'markdown', fullFilename) : null,
-      process.env.LAMBDA_TASK_ROOT ? join(process.env.LAMBDA_TASK_ROOT, 'markdown', fullFilename) : null,
+      process.env.LAMBDA_TASK_ROOT ? join(process.env.LAMBDA_TASK_ROOT, 'markdown-files', fullFilename) : null,
+      process.env.LAMBDA_TASK_ROOT ? join(process.env.LAMBDA_TASK_ROOT, fullFilename) : null,
     ].filter(Boolean) as string[];
     
     console.log(`Looking for file: ${fullFilename}`);
