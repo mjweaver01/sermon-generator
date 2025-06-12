@@ -53,6 +53,7 @@ export default async (request: Request) => {
       Craft a sermon in markdown format that speaks to the heart of the faithful. 
       Use a dynamic, engaging preaching style with biblical references, and a powerful call to action. 
       Ensure the sermon is biblically grounded, emotionally compelling, and relevant to contemporary Christian life.
+      Use bible verses to reinforce the message with scripture.
       Use the web search tool to find current events, news, or contemporary examples that can help illustrate biblical principles and make the sermon more relevant to today's world.
     `;
 
