@@ -14,7 +14,7 @@
           <div class="header-spacer"></div>
         </div>
       </div>
-      
+
       <div class="content">
         <div class="generator-form">
           <div class="input-section">
@@ -40,18 +40,28 @@
           </div>
 
           <div class="prefill-section">
-            <button @click="clearForm" class="clear-btn" :disabled="loading || (!question.trim() && !biblicalContext.trim())">
+            <button
+              @click="clearForm"
+              class="clear-btn"
+              :disabled="
+                loading || (!question.trim() && !biblicalContext.trim())
+              "
+            >
               <span class="btn-icon">🗑️</span>
               Clear Form
             </button>
-            <button @click="prefillExample" class="prefill-btn" :disabled="loading">
+            <button
+              @click="prefillExample"
+              class="prefill-btn"
+              :disabled="loading"
+            >
               <span class="btn-icon">💡</span>
               Prefill Example
             </button>
           </div>
 
-          <button  
-            @click="generateSermon" 
+          <button
+            @click="generateSermon"
             :disabled="!question.trim() || loading"
             class="generate-btn"
           >
@@ -80,8 +90,8 @@
                 />
                 <span class="file-extension">.md</span>
               </div>
-              <button 
-                @click="saveToFile" 
+              <button
+                @click="saveToFile"
                 :disabled="!filename.trim() || saving"
                 class="save-btn"
               >
@@ -91,7 +101,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="sermon-preview">
             <div v-html="renderedSermon" class="markdown-content"></div>
           </div>
@@ -160,12 +170,12 @@ const prefillExample = () => {
 
 const generateSermon = async () => {
   if (!question.value.trim()) return
-  
+
   loading.value = true
   error.value = ''
   generatedSermon.value = ''
   renderedSermon.value = ''
-  
+
   try {
     const response = await fetch('/api/generate-sermon', {
       method: 'POST',
@@ -174,8 +184,8 @@ const generateSermon = async () => {
       },
       body: JSON.stringify({
         question: question.value.trim(),
-        biblicalContext: biblicalContext.value.trim()
-      })
+        biblicalContext: biblicalContext.value.trim(),
+      }),
     })
 
     if (!response.ok) {
@@ -194,7 +204,7 @@ const generateSermon = async () => {
 
     while (true) {
       const { done, value } = await reader.read()
-      
+
       if (done) break
 
       const chunk = decoder.decode(value, { stream: true })
@@ -204,12 +214,12 @@ const generateSermon = async () => {
         if (line.startsWith('data: ')) {
           try {
             const data = JSON.parse(line.slice(6))
-            
+
             if (data.done) {
               // Stream is complete
               break
             }
-            
+
             if (data.content) {
               accumulatedContent += data.content
               generatedSermon.value = accumulatedContent
@@ -222,11 +232,11 @@ const generateSermon = async () => {
         }
       }
     }
-    
+
     if (!accumulatedContent) {
       throw new Error('No response generated')
     }
-    
+
     // Generate a default filename based on the question
     const defaultFilename = question.value
       .toLowerCase()
@@ -234,7 +244,6 @@ const generateSermon = async () => {
       .replace(/\s+/g, '-')
       .substring(0, 50)
     filename.value = defaultFilename || `sermon-${Date.now()}`
-    
   } catch (err: any) {
     error.value = err.message || 'Failed to generate sermon'
     console.error('Error generating sermon:', err)
@@ -245,13 +254,13 @@ const generateSermon = async () => {
 
 const saveToFile = async () => {
   if (!generatedSermon.value || !filename.value.trim()) return
-  
+
   saving.value = true
-  
+
   try {
     // Create a blob with the markdown content
     const blob = new Blob([generatedSermon.value], { type: 'text/markdown' })
-    
+
     // Create a download link
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -261,10 +270,9 @@ const saveToFile = async () => {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-    
+
     // Show success message
     alert('Sermon saved successfully!')
-    
   } catch (err: any) {
     error.value = 'Failed to save file'
     console.error('Error saving file:', err)
@@ -284,7 +292,12 @@ const saveToFile = async () => {
 .sermon-generator {
   max-width: 1000px;
   margin: 0 auto;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
 }
 
 .header {
@@ -302,7 +315,8 @@ const saveToFile = async () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+    repeat;
   opacity: 0.3;
 }
 
@@ -325,7 +339,7 @@ const saveToFile = async () => {
   color: white;
   font-size: 1.8rem;
   font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-spacer {
@@ -352,7 +366,7 @@ const saveToFile = async () => {
 .back-btn:hover {
   background: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .btn-icon {
@@ -524,8 +538,12 @@ const saveToFile = async () => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {
@@ -689,7 +707,12 @@ const saveToFile = async () => {
 .markdown-content :deep(h4),
 .markdown-content :deep(h5),
 .markdown-content :deep(h6) {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   color: #1f2937;
   margin-top: 2.5rem;
   margin-bottom: 1.25rem;
@@ -837,4 +860,4 @@ const saveToFile = async () => {
     padding: 2rem 1rem;
   }
 }
-</style> 
+</style>

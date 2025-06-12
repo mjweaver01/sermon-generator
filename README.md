@@ -14,11 +14,13 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
 ## Setup
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 2. **Configure OpenAI API:**
+
    - For local development, create a `.env` file in the project root:
      ```
      OPENAI_API_KEY=your_actual_openai_api_key_here
@@ -26,11 +28,13 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
    - For Netlify deployment, set the environment variable in your Netlify site settings
 
 3. **Start development server:**
+
    ```bash
    npm run dev
    ```
-   
+
    **Or use Netlify Dev for full edge functions support:**
+
    ```bash
    npm run netlify:dev
    ```
@@ -38,6 +42,7 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
 ## Usage
 
 1. **Generate a Sermon:**
+
    - Visit the home page and click "Generate New Sermon"
    - Enter your question, concern, or topic
    - Optionally add biblical context or specific verses

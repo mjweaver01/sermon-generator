@@ -1,11 +1,11 @@
-# Sermon: “This Too Is For the Best”—Finding Hope in Grief  
+# Sermon: “This Too Is For the Best”—Finding Hope in Grief
 
 ---
 
 > “Gam zu le tova” — **“this too is for the best”**
 
 Beloved family of faith,  
-Today we gather with heavy hearts. Grief has visited; loss has gripped us. When death lingers at our door, when memory’s ache makes each breath a trial, we ask, *Where is God? Where is hope?*
+Today we gather with heavy hearts. Grief has visited; loss has gripped us. When death lingers at our door, when memory’s ache makes each breath a trial, we ask, _Where is God? Where is hope?_
 
 But the story is not over. God is not silent. Hear these promises—ancient, enduring, unbreakable. Hear God's comforting Word for the brokenhearted:
 
@@ -48,7 +48,7 @@ You are worried, you are afraid, but cling to this: **Nothing—NOTHING—can se
 
 ## V. **God’s Purpose in Pain—Gam Zu Le Tova**
 
-The ancient teacher Nachum Ish Gamzu would say, *“Gam zu le tova.”* “This too is for the best.” It's hard to see. Grief can blind us. But listen again to the Word:
+The ancient teacher Nachum Ish Gamzu would say, _“Gam zu le tova.”_ “This too is for the best.” It's hard to see. Grief can blind us. But listen again to the Word:
 
 > “And we know that for those who love God all things work together for good, for those who are called according to his purpose.”  
 > —Romans 8:28
@@ -68,7 +68,8 @@ God Himself promises to wipe every tear. One day, every sorrow will make sense i
 
 ## **Call to Action: Trust, Hope, and Love**
 
-Beloved,  
+Beloved,
+
 - Mourn—yes.
 - Cry—yes.
 - Miss your brother—yes.
@@ -81,6 +82,6 @@ Tonight, or tomorrow, or whenever grief presses hard, pray:
 
 Live every day with renewed hope. Let love and the gospel flow from your life. And if you need to talk, to pray, to weep—reach out to this church family. We are the body of Christ—NO ONE grieves alone.
 
-**Your sorrow will turn to joy. Your questions will bow to God’s answers. Jesus is Lord of the living and the dead—trust Him today.**  
+**Your sorrow will turn to joy. Your questions will bow to God’s answers. Jesus is Lord of the living and the dead—trust Him today.**
 
 **Amen.**

@@ -1,41 +1,48 @@
 <template>
   <div class="markdown-viewer-wrapper">
     <div class="markdown-viewer">
-    <div class="header">
-      <div class="header-background"></div>
-      <div class="header-nav">
-        <button @click="goBack" class="back-btn">
-          <span class="btn-icon">←</span>
-          Back to List
-        </button>
-        <div class="header-title">
-          <h1>📖 {{ filename.replace(/[-_]/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) }}</h1>
-        </div>
-        <div class="header-actions">
-          <button @click="viewRaw" class="action-btn raw-btn">
-            <span class="btn-icon">🥩</span>
-            View Raw
+      <div class="header">
+        <div class="header-background"></div>
+        <div class="header-nav">
+          <button @click="goBack" class="back-btn">
+            <span class="btn-icon">←</span>
+            Back to List
           </button>
-          <button @click="downloadFile" class="action-btn download-btn">
-            <span class="btn-icon">📥</span>
-            Download
-          </button>
+          <div class="header-title">
+            <h1>
+              📖
+              {{
+                filename
+                  .replace(/[-_]/g, ' ')
+                  .replace(/\b\w/g, (l: string) => l.toUpperCase())
+              }}
+            </h1>
+          </div>
+          <div class="header-actions">
+            <button @click="viewRaw" class="action-btn raw-btn">
+              <span class="btn-icon">🥩</span>
+              View Raw
+            </button>
+            <button @click="downloadFile" class="action-btn download-btn">
+              <span class="btn-icon">📥</span>
+              Download
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    
-    <div class="content">
-      <div v-if="loading" class="loading">
-        <div class="loading-spinner"></div>
-        <p>Loading sermon...</p>
+
+      <div class="content">
+        <div v-if="loading" class="loading">
+          <div class="loading-spinner"></div>
+          <p>Loading sermon...</p>
+        </div>
+        <div v-else-if="error" class="error">
+          <div class="error-icon">⚠️</div>
+          <h3>Unable to Load Sermon</h3>
+          <p>{{ error }}</p>
+        </div>
+        <div v-else class="markdown-content" v-html="renderedMarkdown"></div>
       </div>
-      <div v-else-if="error" class="error">
-        <div class="error-icon">⚠️</div>
-        <h3>Unable to Load Sermon</h3>
-        <p>{{ error }}</p>
-      </div>
-      <div v-else class="markdown-content" v-html="renderedMarkdown"></div>
-    </div>
     </div>
   </div>
 </template>
@@ -73,7 +80,7 @@ const viewRaw = () => {
 
 const downloadFile = () => {
   if (!markdownContent.value) return
-  
+
   const blob = new Blob([markdownContent.value], { type: 'text/markdown' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -89,14 +96,16 @@ const loadMarkdown = async () => {
   try {
     loading.value = true
     error.value = ''
-    
+
     // Use the new API endpoint to fetch markdown content
-    const response = await fetch(`/api/markdown-content?filename=${props.filename}`)
+    const response = await fetch(
+      `/api/markdown-content?filename=${props.filename}`
+    )
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.error || `Failed to load ${props.filename}`)
     }
-    
+
     markdownContent.value = await response.text()
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Unknown error'
@@ -120,7 +129,12 @@ onMounted(() => {
 .markdown-viewer {
   max-width: 1000px;
   margin: 0 auto;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
 }
 
 .header {
@@ -138,7 +152,8 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+    repeat;
   opacity: 0.3;
 }
 
@@ -161,7 +176,7 @@ onMounted(() => {
   color: white;
   font-size: 1.8rem;
   font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .back-btn {
@@ -184,7 +199,7 @@ onMounted(() => {
 .back-btn:hover {
   background: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .header-actions {
@@ -213,7 +228,7 @@ onMounted(() => {
 .action-btn:hover {
   background: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .raw-btn:hover {
@@ -251,8 +266,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading p {
@@ -307,7 +326,12 @@ onMounted(() => {
 .markdown-content :deep(h4),
 .markdown-content :deep(h5),
 .markdown-content :deep(h6) {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   color: #1f2937;
   margin-top: 2.5rem;
   margin-bottom: 1.25rem;
@@ -567,4 +591,4 @@ onMounted(() => {
     padding: 1.5rem 1rem;
   }
 }
-</style> 
+</style>

@@ -10,7 +10,8 @@ Today, my heart comes to you heavy yet hopeful. We gather not just as a communit
 
 Sometimes, life’s darkest moments make us question everything. “Why did this happen? Where is God in it all? Is my loved one really safe now?” These are honest questions, and God invites us to bring them to Him.
 
-The psalmist declares,  
+The psalmist declares,
+
 > “The LORD is near to the brokenhearted and saves the crushed in spirit.” — Psalm 34:18
 
 Friends, God does not turn away from our tears or condemn our grief. He draws close. He holds us through the storm.
@@ -19,15 +20,18 @@ Friends, God does not turn away from our tears or condemn our grief. He draws cl
 
 ## Assurance for Our Loved Ones in Christ
 
-Regarding your brother, remember the words of Jesus,  
+Regarding your brother, remember the words of Jesus,
+
 > “I am the resurrection and the life. Whoever believes in me, though he die, yet shall he live...” — John 11:25
 
 Our hope is anchored in Christ’s victory over death. The Bible promises that those who believe in Jesus have eternal life. We cannot fully understand all the mysteries of God’s judgment and mercy, but we do know this: **Salvation is by grace through faith, not by works.** (Ephesians 2:8-9)
 
-Jesus said,  
+Jesus said,
+
 > “Truly, truly, I say to you, whoever hears my word and believes him who sent me has eternal life. He does not come into judgment, but has passed from death to life.” — John 5:24
 
-God’s love is relentless. Nothing—no sin, no failure, no moment of despair—can separate us from His love.  
+God’s love is relentless. Nothing—no sin, no failure, no moment of despair—can separate us from His love.
+
 > “For I am sure that neither death nor life...nor anything else in all creation, will be able to separate us from the love of God in Christ Jesus our Lord.” — Romans 8:38-39
 
 So take heart. God’s grace is greater than our darkest moments. Trust in His mercy for your brother, and cling to the hope that he is in the hands of a loving Savior.
@@ -36,10 +40,12 @@ So take heart. God’s grace is greater than our darkest moments. Trust in His m
 
 ## Moving Forward: Finding Hope and Purpose
 
-Now, what of *you*—the ones left behind, aching and uncertain? The LORD calls you to cast your burdens on Him,  
+Now, what of _you_—the ones left behind, aching and uncertain? The LORD calls you to cast your burdens on Him,
+
 > “Cast all your anxieties on him, because he cares for you.” — 1 Peter 5:7
 
-Do not carry this weight alone. Let God’s peace guard your heart. Trust that He is weaving even this tragedy into His greater purpose,  
+Do not carry this weight alone. Let God’s peace guard your heart. Trust that He is weaving even this tragedy into His greater purpose,
+
 > “And we know that for those who love God all things work together for good, for those who are called according to his purpose.” — Romans 8:28
 
 Remember the ancient wisdom of Nachum Ish Gamzu:  
@@ -58,7 +64,8 @@ Remember the ancient wisdom of Nachum Ish Gamzu:
 
 ## Closing Encouragement
 
-Dear friend, hear this promise from Revelation:  
+Dear friend, hear this promise from Revelation:
+
 > “He will wipe away every tear from their eyes, and death shall be no more...for the former things have passed away.” — Revelation 21:4
 
 One day, every hurt will be healed, every tear wiped away. Until then, hold tightly to Jesus, the Resurrection and the Life.

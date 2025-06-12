@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Beloved, today we gather with heavy hearts, sometimes carrying burdens that seem too much to bear. Many of us know the pain of loss, the ache of missing someone we love. I want to speak directly to that sorrow—a sorrow that is real, deep, and not easily set aside. Yet, in our brokenness, in our questioning, in our doubts, God draws near. And His Word offers us hope, comfort, and assurance.  
+Beloved, today we gather with heavy hearts, sometimes carrying burdens that seem too much to bear. Many of us know the pain of loss, the ache of missing someone we love. I want to speak directly to that sorrow—a sorrow that is real, deep, and not easily set aside. Yet, in our brokenness, in our questioning, in our doubts, God draws near. And His Word offers us hope, comfort, and assurance.
 
 There’s an ancient Jewish saying that echoes even into our own faith: **“Gam zu le tova”—“This too is for the best.”** How can we say that in the face of death? How can we believe it when our hearts are shattered?
 
@@ -15,7 +15,7 @@ Let’s listen to what the Lord says:
 
 ## 1. **God Sees Your Sorrow**
 
-Do not believe for a moment that God is distant from your pain. He is right there, in the silence of your weeping, in the nights when sleep won’t come. The Lord is close—*closer than your very breath!* When we are broken, He draws near, not away.
+Do not believe for a moment that God is distant from your pain. He is right there, in the silence of your weeping, in the nights when sleep won’t come. The Lord is close—_closer than your very breath!_ When we are broken, He draws near, not away.
 
 Isn’t it easy to feel alone in grief? To fear that our loved ones are lost, or that we are sinking in sadness? But listen! God is not offended by your questions. He entered our grief in Jesus Christ—He wept at the tomb of His friend Lazarus! God knows your sorrow and shares it.
 
@@ -26,7 +26,7 @@ Scripture invites us:
 > “Cast all your anxieties on him, because he cares for you.”  
 > — 1 Peter 5:7
 
-Grief isn’t something we must bear alone. Lay it before the Lord in prayer. Speak your fears, your doubts, your anguish. *He cares!* He welcomes every sigh, every tear. And Jesus Himself understands—for He was “a man of sorrows, and acquainted with grief.” 
+Grief isn’t something we must bear alone. Lay it before the Lord in prayer. Speak your fears, your doubts, your anguish. _He cares!_ He welcomes every sigh, every tear. And Jesus Himself understands—for He was “a man of sorrows, and acquainted with grief.”
 
 ## 3. **Hope in the Resurrection**
 
@@ -35,7 +35,7 @@ But friends, Christ has not only shared our death—He has conquered it!
 > “I am the resurrection and the life. Whoever believes in me, though he die, yet shall he live...”  
 > — John 11:25
 
-Let that sink into your spirit! Death is not the world’s last word—Jesus Christ is! He has broken the grave. All who put their trust in Him receive *eternal* life. When you wonder about your brother—place his destiny in the nail-scarred hands of Jesus, who desires that all should be saved and come to the knowledge of the truth (1 Timothy 2:4).
+Let that sink into your spirit! Death is not the world’s last word—Jesus Christ is! He has broken the grave. All who put their trust in Him receive _eternal_ life. When you wonder about your brother—place his destiny in the nail-scarred hands of Jesus, who desires that all should be saved and come to the knowledge of the truth (1 Timothy 2:4).
 
 No, we do not know every heart. But we know the heart of God! And His heart is rich in mercy, abounding in grace.
 
@@ -103,4 +103,4 @@ Draw near to the brokenhearted today. Wrap your children in your loving arms. Le
 > “Truly, truly, I say to you, whoever hears my word and believes him who sent me has eternal life. He does not come into judgment, but has passed from death to life.”  
 > — John 5:24
 
-*This too is for the best—because our hope is in Christ, and Christ is making all things new. Let us walk by faith and not by sight, until we are reunited, face-to-face, in His presence forever. Amen.*
+_This too is for the best—because our hope is in Christ, and Christ is making all things new. Let us walk by faith and not by sight, until we are reunited, face-to-face, in His presence forever. Amen._

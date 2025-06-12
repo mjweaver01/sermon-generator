@@ -7,6 +7,6 @@ export default defineConfig({
   build: {
     // Ensure compatibility with Netlify
     target: 'es2020',
-    outDir: 'dist'
-  }
+    outDir: 'dist',
+  },
 })

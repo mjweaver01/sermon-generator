@@ -7,24 +7,24 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
   },
   {
     path: '/generate',
     name: 'SermonGenerator',
-    component: SermonGenerator
+    component: SermonGenerator,
   },
   {
     path: '/markdown/:filename',
     name: 'MarkdownViewer',
     component: MarkdownViewer,
-    props: true
-  }
+    props: true,
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })
 
-export default router 
+export default router

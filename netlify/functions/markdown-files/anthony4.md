@@ -1,4 +1,3 @@
-
 # **“This Too Is for the Best” — A Sermon of Hope for the Brokenhearted**
 
 ---
@@ -22,7 +21,7 @@ There is no weakness in leaning on God—in fact, that is where true strength is
 
 ## **2. “Gam zu le tova” — This Too Is for the Best?**
 
-You have heard the saying: *“Gam zu le tova”—“This too is for the best.”* Sometimes, those words feel impossible. How can the loss of a beloved brother, Anthony, ever be for the best?
+You have heard the saying: _“Gam zu le tova”—“This too is for the best.”_ Sometimes, those words feel impossible. How can the loss of a beloved brother, Anthony, ever be for the best?
 
 Beloved, God is not the author of evil. He grieves with you. But our faith clings to the unshakeable promise:
 
@@ -39,15 +38,15 @@ Your grief is real. Your questions are valid. “Why, Lord? Where is Anthony now
 
 Let’s remember:
 
-- **1 Peter 5:7:**  
-  > *“Cast all your anxieties on him, because he cares for you.”*
+- **1 Peter 5:7:**
+  > _“Cast all your anxieties on him, because he cares for you.”_
 
 Marissa, pour out your heart. God welcomes your tears, your confusion, your anger. **He cares for you** more than words can express.
 
 And our hope for Anthony is grounded in **the love and mercy of Jesus:**
 
-- **John 11:25-26:**  
-  > *“I am the resurrection and the life. Whoever believes in me, though he die, yet shall he live, and everyone who lives and believes in me shall never die.”*
+- **John 11:25-26:**
+  > _“I am the resurrection and the life. Whoever believes in me, though he die, yet shall he live, and everyone who lives and believes in me shall never die.”_
 
 We trust in God’s mercy and leave our loved ones in His hands. Your hope is not in your understanding of the situation, but in God’s immense love and grace—greater than any of us can comprehend.
 
@@ -57,15 +56,15 @@ We trust in God’s mercy and leave our loved ones in His hands. Your hope is no
 
 When our hearts accuse us, **hear again the promise**:
 
-- **Romans 8:38-39:**  
-  > *“For I am sure that neither death nor life ... nor anything else in all creation, will be able to separate us from the love of God in Christ Jesus our Lord.”*
+- **Romans 8:38-39:**
+  > _“For I am sure that neither death nor life ... nor anything else in all creation, will be able to separate us from the love of God in Christ Jesus our Lord.”_
 
 Death cannot separate Anthony from God’s love. Nor you. Nor me.
 
 Our salvation is by **grace**, not by the strength of our faith, nor the perfection of our walk:
 
-- **Ephesians 2:8-9:**  
-  > *“For by grace you have been saved through faith. And this is not your own doing; it is the gift of God ...”*
+- **Ephesians 2:8-9:**
+  > _“For by grace you have been saved through faith. And this is not your own doing; it is the gift of God ...”_
 
 ---
 
@@ -73,7 +72,7 @@ Our salvation is by **grace**, not by the strength of our faith, nor the perfect
 
 This is not the end of the story. **Revelation 21:4** promises us:
 
-> *“He will wipe away every tear from their eyes, and death shall be no more ...”*
+> _“He will wipe away every tear from their eyes, and death shall be no more ...”_
 
 Anthony’s story continues in the eternal, merciful hands of God. Your story is cradled there too.
 
@@ -81,7 +80,8 @@ Anthony’s story continues in the eternal, merciful hands of God. Your story is
 
 ## **6. What Now? The Call to Cast Your Life on Him**
 
-Marissa, and beloved in Christ:  
+Marissa, and beloved in Christ:
+
 - Hold nothing back from God—bring Him your pain, your doubts, your hope.
 - Let your heart rest in His embrace, where Anthony now rests as well.
 - Cry out, “Lord, carry me!”—and He will.
@@ -94,8 +94,8 @@ Let us pray together:
 
 ### **Prayer**
 
-*Father,  
-We come broken, mourning, with empty hands. We lift Anthony to your mercy, trusting in your love that is stronger than death. Hold Marissa close, wrap her in your arms. Turn our tears into hope, our grief into deeper faith, and our questions into trust. May Anthony rest in your glorious presence. May our hearts find peace in your promise that nothing, not even death, can separate us from your love. In Christ’s name, Amen.*
+_Father,  
+We come broken, mourning, with empty hands. We lift Anthony to your mercy, trusting in your love that is stronger than death. Hold Marissa close, wrap her in your arms. Turn our tears into hope, our grief into deeper faith, and our questions into trust. May Anthony rest in your glorious presence. May our hearts find peace in your promise that nothing, not even death, can separate us from your love. In Christ’s name, Amen._
 
 ---
 
@@ -107,6 +107,6 @@ If you feel alone, reach out to trusted friends, pastors, or counselors. The Chu
 
 **Let your heart say, “Lord, I believe—help my unbelief!” And know that even in the darkness, Jesus is with you.** There is nothing, not even death or despair, that can separate you from His love.
 
-*Anthony is in the hands of the Shepherd who leaves the ninety-nine to find the one. Rest your hope in that Good Shepherd, and He will bring you through.*
+_Anthony is in the hands of the Shepherd who leaves the ninety-nine to find the one. Rest your hope in that Good Shepherd, and He will bring you through._
 
 **Amen and amen.**

@@ -7,27 +7,29 @@
           <div class="title-text">Sermons</div>
           <span class="title-decoration"></span>
         </h1>
-        <p class="hero-subtitle">Discover wisdom, create inspiration, and share faith</p>
+        <p class="hero-subtitle">
+          Discover wisdom, create inspiration, and share faith
+        </p>
       </div>
-      
+
       <div class="actions">
-        <div
-          class="action-item generator-item"
-          @click="goToGenerator"
-        >
+        <div class="action-item generator-item" @click="goToGenerator">
           <div class="action-icon">🎯</div>
           <h3>Generate New Sermon</h3>
-          <p>Create a personalized sermon using AI - ask questions, get guidance, and save as markdown</p>
+          <p>
+            Create a personalized sermon using AI - ask questions, get guidance,
+            and save as markdown
+          </p>
           <div class="action-arrow">→</div>
         </div>
       </div>
-      
+
       <div class="sermons-section">
         <div class="section-header">
           <h2>📚 Saved Sermons</h2>
           <div class="section-divider"></div>
         </div>
-        
+
         <div v-if="loading" class="loading">
           <div class="loading-spinner"></div>
           <p>Loading sermons...</p>
@@ -83,12 +85,14 @@ const error = ref('')
 const generateDisplayName = (filename: string): string => {
   // Remove .md extension and convert to title case
   const nameWithoutExtension = filename.replace('.md', '')
-  
+
   // Handle special cases and convert to readable format
-  return nameWithoutExtension
-    .split(/[-_]/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ') + ' Sermon'
+  return (
+    nameWithoutExtension
+      .split(/[-_]/)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ') + ' Sermon'
+  )
 }
 
 // Load markdown files dynamically using Node.js-powered API
@@ -96,17 +100,17 @@ const loadMarkdownFiles = async () => {
   try {
     loading.value = true
     error.value = ''
-    
+
     const response = await fetch('/api/markdown-content')
     if (!response.ok) {
       throw new Error('Failed to load markdown file list')
     }
-    
+
     const filenames = await response.json()
     markdownFiles.value = filenames.map((filename: string) => ({
       name: filename,
       display: generateDisplayName(filename),
-      description: `Click to read the ${generateDisplayName(filename).toLowerCase()}`
+      description: `Click to read the ${generateDisplayName(filename).toLowerCase()}`,
     }))
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Unknown error'
@@ -143,7 +147,12 @@ onMounted(() => {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
 }
 
 .hero-section {
@@ -184,8 +193,13 @@ onMounted(() => {
 }
 
 @keyframes sparkle {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.1) rotate(5deg); }
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
 }
 
 .hero-subtitle {
@@ -222,7 +236,12 @@ onMounted(() => {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s;
 }
 
@@ -390,8 +409,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading p {
@@ -446,33 +469,33 @@ onMounted(() => {
   .home {
     padding: 1rem;
   }
-  
+
   .main-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .action-item {
     padding: 2rem;
   }
-  
+
   .file-item {
     padding: 1.5rem;
     flex-direction: column;
     text-align: center;
     gap: 1rem;
   }
-  
+
   .file-arrow {
     position: static;
     transform: rotate(90deg);
   }
-  
+
   .file-item:hover .file-arrow {
     transform: rotate(90deg);
   }
 }
-</style> 
+</style>
