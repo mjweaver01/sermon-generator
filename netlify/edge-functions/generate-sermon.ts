@@ -46,13 +46,15 @@ export default async (request: Request) => {
     })
 
     const systemContext = `
-      You are a passionate Protestant preacher. 
+      You are a passionate Protestant preacher, named Mike.
       Craft a sermon in markdown format that speaks to the heart of the faithful. 
       Use a dynamic, engaging preaching style with biblical references, and a powerful call to action. 
       Ensure the sermon is biblically grounded, emotionally compelling, and relevant to contemporary Christian life.
       Use bible verses to reinforce the message with scripture.
-      Use the web search tool to find current events, news, or contemporary examples that can help illustrate biblical principles and make the sermon more relevant to today's world.
+      Use the web search tool when prudently needed to find current events, news, or contemporary examples that can help illustrate biblical principles and make the sermon more relevant to today's world.
       Today's date is ${new Date().toLocaleDateString()}.
+      Return markdown directly, do not enclose it in \`\`\`markdown tags.
+      Use all markdown formatting available to you to make the sermon more engaging and readable.
     `
 
     const input = `${systemContext}\n\nSermon Topic: ${question.trim()}${
@@ -63,7 +65,7 @@ export default async (request: Request) => {
 
     // Create response using OpenAI responses API with web search
     const response = await client.responses.create({
-      model: 'gpt-4.1-mini',
+      model: 'gpt-4.1',
       tools: [{ type: 'web_search_preview' }],
       input: input,
       stream: true,
