@@ -1,3 +1,5 @@
+import OpenAI from "openai";
+
 export default async (request: Request) => {
   // Handle CORS preflight
   if (request.method === "OPTIONS") {
@@ -41,103 +43,51 @@ export default async (request: Request) => {
       );
     }
 
-    const systemPrompt = `
+    // Initialize OpenAI client
+    const client = new OpenAI({
+      apiKey: apiKey
+    });
+
+    const systemContext = `
       You are a passionate Protestant preacher. 
       Craft a sermon in markdown format that speaks to the heart of the faithful. 
       Use a dynamic, engaging preaching style with biblical references, and a powerful call to action. 
       Ensure the sermon is biblically grounded, emotionally compelling, and relevant to contemporary Christian life.
+      Use the web search tool to find current events, news, or contemporary examples that can help illustrate biblical principles and make the sermon more relevant to today's world.
     `;
 
-    const userPrompt = `${question.trim()}${
+    const input = `${systemContext}\n\nSermon Topic: ${question.trim()}${
       biblicalContext?.trim() 
         ? '\n\nAdditional Biblical Context:\n' + biblicalContext.trim() 
         : ''
     }`;
 
-    // Make request to OpenAI API
-    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4.1-mini",
-        messages: [
-          {
-            role: "system",
-            content: systemPrompt
-          },
-          {
-            role: "user",
-            content: userPrompt
-          }
-        ],
-        temperature: 0.8,
-        max_tokens: 2048,
-        stream: true
-      })
+    // Create response using OpenAI responses API with web search
+    const response = await client.responses.create({
+      model: "gpt-4.1-mini",
+      tools: [{ type: "web_search_preview" }],
+      input: input,
+      stream: true
     });
-
-    if (!openaiResponse.ok) {
-      return new Response(
-        JSON.stringify({ error: "Failed to generate sermon" }),
-        { 
-          status: 500,
-          headers: { "Content-Type": "application/json" }
-        }
-      );
-    }
 
     // Set up streaming response
     const stream = new ReadableStream({
       async start(controller) {
-        const reader = openaiResponse.body?.getReader();
-        const decoder = new TextDecoder();
-        
-        if (!reader) {
-          controller.close();
-          return;
-        }
-
         try {
-          while (true) {
-            const { done, value } = await reader.read();
-            
-            if (done) {
-              // Send completion signal
+          for await (const event of response) {
+            // Handle different event types from responses API
+            if ('delta' in event && event.delta) {
               controller.enqueue(
-                new TextEncoder().encode(`data: ${JSON.stringify({ done: true })}\n\n`)
+                new TextEncoder().encode(`data: ${JSON.stringify({ content: event.delta })}\n\n`)
               );
-              break;
-            }
-
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n');
-            
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const jsonStr = line.slice(6);
-                if (jsonStr.trim() === '[DONE]') {
-                  continue;
-                }
-                
-                try {
-                  const data = JSON.parse(jsonStr);
-                  const content = data.choices?.[0]?.delta?.content || '';
-                  
-                  if (content) {
-                    controller.enqueue(
-                      new TextEncoder().encode(`data: ${JSON.stringify({ content })}\n\n`)
-                    );
-                  }
-                } catch (e) {
-                  // Skip invalid JSON
-                  continue;
-                }
-              }
             }
           }
+          
+          // Final completion signal
+          controller.enqueue(
+            new TextEncoder().encode(`data: ${JSON.stringify({ done: true })}\n\n`)
+          );
+          
         } catch (error) {
           console.error('Streaming error:', error);
           controller.enqueue(
