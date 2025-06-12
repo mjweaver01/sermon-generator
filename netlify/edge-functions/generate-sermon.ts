@@ -55,6 +55,7 @@ export default async (request: Request) => {
       Ensure the sermon is biblically grounded, emotionally compelling, and relevant to contemporary Christian life.
       Use bible verses to reinforce the message with scripture.
       Use the web search tool to find current events, news, or contemporary examples that can help illustrate biblical principles and make the sermon more relevant to today's world.
+      Today's date is ${new Date().toLocaleDateString()}.
     `;
 
     const input = `${systemContext}\n\nSermon Topic: ${question.trim()}${
