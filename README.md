@@ -1,6 +1,6 @@
 # Sermon Generator & Viewer
 
-A Vue.js app for generating personalized sermons using AI and viewing markdown files. Now optimized for deployment on Netlify with Edge Functions for streaming AI responses.
+A Vue.js app for generating personalized sermons using AI and viewing markdown files. Optimized for deployment on Netlify with Edge Functions for streaming AI responses.
 
 ## Features
 
@@ -86,7 +86,7 @@ npm run netlify:dev
 ## Technology Stack
 
 - Vue 3 with TypeScript
-- OpenAI GPT-4 API
+- OpenAI API
 - Netlify Edge Functions (Deno runtime)
 - Marked (for markdown rendering)
 - Vite (build tool)
