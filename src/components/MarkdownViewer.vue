@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { emojiExtension } from '../marked-emoji'
@@ -72,6 +72,47 @@ const renderedMarkdown = computed(() => {
   }
   return ''
 })
+
+// Function to wrap text content in h1 elements while preserving emojis
+const processH1Elements = () => {
+  const h1Elements = document.querySelectorAll('.markdown-content h1')
+
+  h1Elements.forEach(h1 => {
+    const originalText = h1.textContent || ''
+    const emojiRegex =
+      /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu
+
+    if (originalText.match(emojiRegex)) {
+      // Split content into parts (emojis and text)
+      const parts = originalText.split(emojiRegex)
+      const emojis = originalText.match(emojiRegex) || []
+
+      let result = ''
+      let emojiIndex = 0
+
+      for (let i = 0; i < parts.length; i++) {
+        // Add text part if it exists and isn't empty
+        if (parts[i] && parts[i].trim()) {
+          result += `<span class="gradient-text">${parts[i]}</span>`
+        } else if (parts[i]) {
+          // Preserve whitespace
+          result += parts[i]
+        }
+
+        // Add emoji if it exists
+        if (emojiIndex < emojis.length) {
+          result += `<span class="emoji">${emojis[emojiIndex]}</span>`
+          emojiIndex++
+        }
+      }
+
+      h1.innerHTML = result
+    } else {
+      // No emojis, wrap all content in gradient-text
+      h1.innerHTML = `<span class="gradient-text">${originalText}</span>`
+    }
+  })
+}
 
 const goBack = () => {
   router.push('/')
@@ -116,6 +157,14 @@ const loadMarkdown = async () => {
     loading.value = false
   }
 }
+
+// Watch for changes in rendered markdown and process h1 elements
+watch(renderedMarkdown, async () => {
+  if (renderedMarkdown.value) {
+    await nextTick()
+    processH1Elements()
+  }
+})
 
 onMounted(() => {
   loadMarkdown()
@@ -344,10 +393,20 @@ onMounted(() => {
 
 .markdown-content :deep(h1) {
   font-size: 2.25rem;
+}
+
+/* Apply gradient to text content while preserving emojis */
+.markdown-content :deep(h1 .gradient-text) {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Emojis will remain with normal styling */
+.markdown-content :deep(h1 .emoji) {
+  -webkit-text-fill-color: initial;
+  background: none;
 }
 
 .markdown-content :deep(h2) {
