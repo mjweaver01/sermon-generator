@@ -51,6 +51,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
+import { emojiExtension } from '../marked-emoji'
 
 interface Props {
   filename: string
@@ -62,6 +63,8 @@ const router = useRouter()
 const markdownContent = ref('')
 const loading = ref(true)
 const error = ref('')
+
+marked.use({ extensions: [emojiExtension] })
 
 const renderedMarkdown = computed(() => {
   if (markdownContent.value) {
