@@ -84,7 +84,7 @@ There will come a day when Anthony’s pain is gone, when your tears are gone, w
 
 ---
 
-## ## :raised_hands: **Application & Call to Action**
+## :raised_hands: **Application & Call to Action**
 
 **1. Pour out your honest heart to God—every grief, every question.**  
 _Prayer is not a performance—it’s a lifeline, especially in the storm._
