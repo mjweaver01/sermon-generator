@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <div class="content">
+      <div class="content" :class="{ 'sermon-view': generatedSermon }">
         <div class="generator-form">
           <div class="input-section">
             <label for="question">Your Question or Topic:</label>
@@ -379,6 +379,15 @@ const saveToFile = async () => {
   margin: 0 auto;
 }
 
+@media (min-width: 768px) {
+  .content.sermon-view {
+    display: grid;
+    max-width: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
 .generator-form {
   background: white;
   padding: 3rem;
@@ -386,6 +395,12 @@ const saveToFile = async () => {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   margin-bottom: 2rem;
   border: 1px solid #e5e7eb;
+}
+
+@media (min-width: 768px) {
+  .content.sermon-view .generator-form {
+    margin-bottom: 0;
+  }
 }
 
 .input-section {
