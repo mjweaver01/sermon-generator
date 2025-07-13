@@ -43,16 +43,6 @@
         </div>
         <div v-else class="markdown-content" v-html="renderedMarkdown"></div>
       </div>
-
-      <!-- Audio Player Section -->
-      <div class="audio-section">
-        <AudioPlayer
-          :markdownText="markdownContent"
-          :filename="filename"
-          :streamingInProgress="loading"
-          @audioGenerated="onAudioGenerated"
-        />
-      </div>
     </div>
   </div>
 </template>
@@ -62,7 +52,6 @@ import { ref, onMounted, computed, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { emojiExtension } from '../marked-emoji'
-import AudioPlayer from './AudioPlayer.vue'
 
 interface Props {
   filename: string
@@ -167,16 +156,6 @@ const downloadFile = () => {
   a.click()
   document.body.removeChild(a)
   URL.revokeObjectURL(url)
-}
-
-const onAudioGenerated = async (audioDataUrl: string) => {
-  // Add audio shortcode to the top of the markdown content
-  const shortcode = `[audio:${audioDataUrl}]\n\n`
-
-  // Check if shortcode already exists to avoid duplicates (check for any audio shortcode)
-  if (!markdownContent.value.includes('[audio:data:audio/mpeg;base64,')) {
-    markdownContent.value = shortcode + markdownContent.value
-  }
 }
 
 const loadMarkdown = async () => {
@@ -342,12 +321,6 @@ onMounted(() => {
   padding: 3rem 2rem;
   max-width: 800px;
   margin: 0 auto;
-}
-
-.audio-section {
-  max-width: 800px;
-  margin: 2rem auto 0;
-  padding: 0 2rem;
 }
 
 .loading {
