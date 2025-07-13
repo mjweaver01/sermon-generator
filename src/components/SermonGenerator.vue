@@ -100,6 +100,14 @@
                 {{ saving ? 'Saving...' : 'Save as Markdown' }}
               </button>
             </div>
+
+            <!-- Audio Generation Section -->
+            <AudioPlayer
+              :markdownText="generatedSermon"
+              :filename="filename"
+              :streamingInProgress="loading"
+              @audioGenerated="onAudioGenerated"
+            />
           </div>
 
           <div class="sermon-preview">
@@ -115,6 +123,24 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
+import AudioPlayer from './AudioPlayer.vue'
+
+// Function to process audio shortcodes
+const processAudioShortcodes = (content: string): string => {
+  // Replace [audio:data_url] with HTML audio player
+  return content.replace(/\[audio:([^\]]+)\]/g, (match, audioUrl) => {
+    return `<div class="audio-shortcode">
+      <div class="audio-shortcode-header">
+        <span class="audio-icon">🎵</span>
+        <span class="audio-title">Audio Version</span>
+      </div>
+      <audio controls class="audio-shortcode-player">
+        <source src="${audioUrl}" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>`
+  })
+}
 
 const router = useRouter()
 
@@ -265,7 +291,10 @@ const saveToFile = async () => {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${filename.value.replace(/\.md$/, '')}.md`
+    // Use the exact filename, ensuring it ends with .md
+    a.download = filename.value.endsWith('.md')
+      ? filename.value
+      : `${filename.value}.md`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -278,6 +307,19 @@ const saveToFile = async () => {
     console.error('Error saving file:', err)
   } finally {
     saving.value = false
+  }
+}
+
+const onAudioGenerated = async (audioDataUrl: string) => {
+  // Add audio shortcode to the end of the generated sermon
+  const shortcode = `\n\n[audio:${audioDataUrl}]`
+
+  // Check if shortcode already exists to avoid duplicates (check for any audio shortcode)
+  if (!generatedSermon.value.includes('[audio:data:audio/mpeg;base64,')) {
+    generatedSermon.value += shortcode
+    // Re-render the markdown with the new shortcode and process audio shortcodes
+    const processedContent = processAudioShortcodes(generatedSermon.value)
+    renderedSermon.value = await marked(processedContent)
   }
 }
 </script>
@@ -811,6 +853,41 @@ const saveToFile = async () => {
   border: 1px solid #e2e8f0;
 }
 
+/* Audio Shortcode Styles */
+.markdown-content :deep(.audio-shortcode) {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.markdown-content :deep(.audio-shortcode-header) {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.markdown-content :deep(.audio-icon) {
+  font-size: 1.25rem;
+}
+
+.markdown-content :deep(.audio-title) {
+  font-weight: 600;
+  color: #374151;
+  font-size: 1.1rem;
+}
+
+.markdown-content :deep(.audio-shortcode-player) {
+  width: 100%;
+  border-radius: 8px;
+  outline: none;
+}
+
 @media (max-width: 768px) {
   .sermon-generator {
     padding: 0;
@@ -873,6 +950,24 @@ const saveToFile = async () => {
 
   .sermon-preview {
     padding: 2rem 1rem;
+  }
+
+  .markdown-content :deep(.audio-shortcode) {
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .markdown-content :deep(.audio-shortcode-header) {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .markdown-content :deep(.audio-title) {
+    font-size: 1rem;
+  }
+
+  .markdown-content :deep(.audio-shortcode-player) {
+    margin-top: 0.5rem;
   }
 }
 </style>
