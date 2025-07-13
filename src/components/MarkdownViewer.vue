@@ -170,12 +170,12 @@ const downloadFile = () => {
 }
 
 const onAudioGenerated = async (audioDataUrl: string) => {
-  // Add audio shortcode to the end of the markdown content
-  const shortcode = `\n\n[audio:${audioDataUrl}]`
+  // Add audio shortcode to the top of the markdown content
+  const shortcode = `[audio:${audioDataUrl}]\n\n`
 
   // Check if shortcode already exists to avoid duplicates (check for any audio shortcode)
   if (!markdownContent.value.includes('[audio:data:audio/mpeg;base64,')) {
-    markdownContent.value += shortcode
+    markdownContent.value = shortcode + markdownContent.value
   }
 }
 
