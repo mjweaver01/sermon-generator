@@ -168,11 +168,7 @@ const clearForm = () => {
 
 const prefillExample = () => {
   question.value = `
-  My brother just took his own life, and I am hoping he is in heaven watching over me. 
-  I know things happen for a reason but I am struggling to find strength, and am looking to the lord for help. 
-  Can you give me some guidance?
-  My name is Marissa.
-  My brother's name was Anthony.
+  I am struggling with the weight of the world, can you help provide me guidance?
   `.trim()
   biblicalContext.value = `
   “Gam zu le tova" = “this too is for the best”
