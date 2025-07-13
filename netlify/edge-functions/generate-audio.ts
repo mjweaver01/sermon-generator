@@ -104,16 +104,40 @@ export default async (request: Request) => {
     // Get the audio buffer
     const audioBuffer = await mp3.arrayBuffer()
 
-    return new Response(audioBuffer, {
-      headers: {
-        'Content-Type': 'audio/mpeg',
-        'Content-Length': audioBuffer.byteLength.toString(),
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      },
-    })
+    // Generate a unique filename for the audio file
+    const timestamp = Date.now()
+    const filename = `audio_${timestamp}_${voice}.mp3`
+
+    // Save the audio buffer to markdown-assets folder
+    const audioFilePath = `./netlify/functions/markdown-assets/${filename}`
+    try {
+      await (globalThis as any).Deno.writeFile(
+        audioFilePath,
+        new Uint8Array(audioBuffer)
+      )
+      console.log(`Audio saved to: ${audioFilePath}`)
+    } catch (writeError: any) {
+      console.error('Error saving audio file:', writeError)
+      // If we can't save the file, we'll still return the buffer but no URL
+    }
+
+    // Create the URL for the saved audio file
+    const audioUrl = `/netlify/functions/markdown-assets/${filename}`
+
+    return new Response(
+      JSON.stringify({
+        audioUrl: audioUrl,
+        audioBuffer: Array.from(new Uint8Array(audioBuffer)),
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        },
+      }
+    )
   } catch (error) {
     console.error('Error in audio generation:', error)
     return new Response(JSON.stringify({ error: 'Failed to generate audio' }), {

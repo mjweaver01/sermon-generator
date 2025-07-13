@@ -96,23 +96,25 @@ const generateAudio = async () => {
       throw new Error(errorData.error || 'Failed to generate audio')
     }
 
-    // Get the audio blob
-    const audioBlob = await response.blob()
+    // Get the JSON response with audioUrl and audioBuffer
+    const responseData = await response.json()
 
-    // Create a URL for the audio
+    if (!responseData.audioUrl || !responseData.audioBuffer) {
+      throw new Error('Invalid response format')
+    }
+
+    // Create a blob from the audio buffer for the audio player
+    const audioBufferArray = new Uint8Array(responseData.audioBuffer)
+    const audioBlob = new Blob([audioBufferArray], { type: 'audio/mpeg' })
+
+    // Create a URL for the audio player controls
     if (audioUrl.value) {
       URL.revokeObjectURL(audioUrl.value)
     }
     audioUrl.value = URL.createObjectURL(audioBlob)
 
-    // Convert blob to data URL for embedding in markdown
-    const reader = new FileReader()
-    reader.onload = () => {
-      const dataUrl = reader.result as string
-      // Emit event to parent component with data URL
-      emit('audioGenerated', dataUrl)
-    }
-    reader.readAsDataURL(audioBlob)
+    // Emit the server-saved audio URL for the shortcode (not the blob URL)
+    emit('audioGenerated', responseData.audioUrl)
   } catch (err: any) {
     error.value = err.message || 'Failed to generate audio'
     console.error('Error generating audio:', err)

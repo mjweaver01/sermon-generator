@@ -10,6 +10,10 @@
 [functions."markdown-content"]
   included_files = ["netlify/functions/markdown-files/**"]
 
+# Include audio files for the markdown-assets function
+[functions."markdown-assets"]
+  included_files = ["netlify/functions/markdown-assets/**"]
+
 # Redirect API routes to Netlify functions
 [[redirects]]
   from = "/api/*"

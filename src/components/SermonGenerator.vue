@@ -306,12 +306,12 @@ const saveToFile = async () => {
   }
 }
 
-const onAudioGenerated = async (audioDataUrl: string) => {
+const onAudioGenerated = async (audioUrl: string) => {
   // Add audio shortcode to the top of the generated sermon
-  const shortcode = `[audio:${audioDataUrl}]\n\n`
+  const shortcode = `[audio:${audioUrl}]\n\n`
 
   // Check if shortcode already exists to avoid duplicates (check for any audio shortcode)
-  if (!generatedSermon.value.includes('[audio:data:audio/mpeg;base64,')) {
+  if (!generatedSermon.value.includes('[audio:')) {
     generatedSermon.value = shortcode + generatedSermon.value
     // Re-render the markdown with the new shortcode and process audio shortcodes
     const processedContent = processAudioShortcodes(generatedSermon.value)
