@@ -52,33 +52,17 @@ export default async (request: Request) => {
     const markdownToPlainText = (markdown: string): string => {
       return (
         markdown
-          // Remove audio shortcodes first
+          // Remove audio shortcodes (these would be read as literal text)
           .replace(/\[audio:[^\]]+\]/g, '')
-          // Remove code blocks
+          // Remove code blocks (these often contain syntax that doesn't read well)
           .replace(/```[\s\S]*?```/g, '')
           .replace(/`([^`]+)`/g, '$1')
-          // Convert headers to text with extra spacing for natural pauses
-          .replace(/^#{1,6}\s+(.+)$/gm, '\n\n$1\n\n')
-          // Remove emphasis but keep the text
-          .replace(/\*\*(.*?)\*\*/g, '$1')
-          .replace(/\*(.*?)\*/g, '$1')
-          .replace(/__(.*?)__/g, '$1')
-          .replace(/_(.*?)_/g, '$1')
-          // Remove links but keep the text
-          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-          // Remove images
+          // Remove image alt text syntax (but keep the alt text)
           .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
-          // Convert blockquotes to text with natural pauses
-          .replace(/^>\s+(.+)$/gm, '\n$1\n')
-          // Remove horizontal rules but add pause spacing
-          .replace(/^---+$/gm, '\n\n')
-          // Convert list items to natural speech with pauses
-          .replace(/^\s*[-*+]\s+(.+)$/gm, '$1.\n')
-          .replace(/^\s*\d+\.\s+(.+)$/gm, '$1.\n')
-          // Preserve paragraph breaks and natural spacing
-          .replace(/\n{3,}/g, '\n\n\n')
-          // Clean up leading/trailing whitespace but preserve internal structure
-          .replace(/^\s+|\s+$/g, '')
+          // Remove URLs from links (but keep the link text)
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+          // Clean up excessive whitespace but preserve paragraph structure
+          .replace(/\n{4,}/g, '\n\n\n')
           .trim()
       )
     }
