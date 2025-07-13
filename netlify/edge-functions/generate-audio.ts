@@ -122,7 +122,7 @@ export default async (request: Request) => {
     }
 
     // Create the URL for the saved audio file
-    const audioUrl = `/netlify/functions/markdown-assets/${filename}`
+    const audioUrl = `/api/markdown-assets/${filename}`
 
     return new Response(
       JSON.stringify({
