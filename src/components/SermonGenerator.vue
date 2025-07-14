@@ -128,7 +128,7 @@ import AudioPlayer from './AudioPlayer.vue'
 // Function to process audio shortcodes
 const processAudioShortcodes = (content: string): string => {
   // Replace [audio:data_url] with HTML audio player
-  return content.replace(/\[audio:([^\]]+)\]/g, (match, audioUrl) => {
+  return content.replace(/\[audio:([^\]]+)\]/g, (_match, audioUrl) => {
     return `<div class="audio-shortcode">
       <div class="audio-shortcode-header">
         <span class="audio-icon">🎵</span>
