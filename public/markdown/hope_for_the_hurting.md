@@ -1,4 +1,4 @@
-[audio:/api/markdown-assets/audio_1752522715328_alloy.mp3]
+[audio:/audio/audio_1752522715328_alloy.mp3]
 
 # **Hope for the Hurting: Finding God’s Light When We Feel Lost**
 
@@ -68,6 +68,7 @@ If hope has been hard to find, I urge you—don’t walk alone. Jesus often send
 > _“Bear one another's burdens, and so fulfill the law of Christ.”_
 
 ### **Today, reach out:**
+
 - Pray with someone.
 - Let the church community support you.
 - And if you’ve found hope in Christ, offer a listening ear, a helping hand, a word of encouragement.

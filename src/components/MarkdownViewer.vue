@@ -138,7 +138,7 @@ const goBack = () => {
 }
 
 const viewRaw = () => {
-  window.open(`/api/markdown-content?filename=${props.filename}`, '_blank')
+  window.open(`/markdown/${props.filename}.md`, '_blank')
 }
 
 const downloadFile = () => {
@@ -163,13 +163,10 @@ const loadMarkdown = async () => {
     loading.value = true
     error.value = ''
 
-    // Use the new API endpoint to fetch markdown content
-    const response = await fetch(
-      `/api/markdown-content?filename=${props.filename}`
-    )
+    // Fetch markdown content directly from public/markdown directory
+    const response = await fetch(`/markdown/${props.filename}.md`)
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error || `Failed to load ${props.filename}`)
+      throw new Error(`Failed to load ${props.filename}.md`)
     }
 
     markdownContent.value = await response.text()

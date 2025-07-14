@@ -108,8 +108,8 @@ export default async (request: Request) => {
     const timestamp = Date.now()
     const filename = `audio_${timestamp}_${voice}.mp3`
 
-    // Save the audio buffer to markdown-assets folder
-    const audioFilePath = `./netlify/functions/markdown-assets/${filename}`
+    // Save the audio buffer to public/audio folder
+    const audioFilePath = `./public/audio/${filename}`
     try {
       await (globalThis as any).Deno.writeFile(
         audioFilePath,
@@ -121,8 +121,8 @@ export default async (request: Request) => {
       // If we can't save the file, we'll still return the buffer but no URL
     }
 
-    // Create the URL for the saved audio file
-    const audioUrl = `/api/markdown-assets/${filename}`
+    // Create the URL for the saved audio file (direct public URL)
+    const audioUrl = `/audio/${filename}`
 
     return new Response(
       JSON.stringify({

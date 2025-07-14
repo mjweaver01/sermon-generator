@@ -95,18 +95,20 @@ const generateDisplayName = (filename: string): string => {
   )
 }
 
-// Load markdown files dynamically using Node.js-powered API
+// Load markdown files dynamically using static file access
 const loadMarkdownFiles = async () => {
   try {
     loading.value = true
     error.value = ''
 
-    const response = await fetch('/api/markdown-content')
-    if (!response.ok) {
-      throw new Error('Failed to load markdown file list')
+    // Fetch the index of markdown files from the public/markdown directory
+    const indexResponse = await fetch('/markdown/index.json')
+    if (!indexResponse.ok) {
+      throw new Error('Failed to load markdown file index')
     }
 
-    const filenames = await response.json()
+    const filenames = await indexResponse.json()
+
     markdownFiles.value = filenames.map((filename: string) => ({
       name: filename,
       display: generateDisplayName(filename),

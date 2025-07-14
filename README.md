@@ -39,6 +39,22 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
    npm run netlify:dev
    ```
 
+## File Structure
+
+The app now uses a static file structure instead of Netlify functions for serving markdown and audio files:
+
+```
+public/
+├── markdown/           # Markdown sermon files
+│   ├── index.json     # Auto-generated index of available files
+│   └── *.md          # Sermon markdown files
+├── audio/             # Audio files (MP3)
+│   └── *.mp3         # Audio files for sermons
+└── logo.svg          # App logo
+```
+
+Generated files are automatically saved to the appropriate public directories and served directly by the web server.
+
 ## Usage
 
 1. **Generate a Sermon:**
@@ -50,9 +66,17 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
    - Save the result as a markdown file
 
 2. **View Saved Sermons:**
+
    - Place your markdown files in the `public/markdown/` directory
+   - Audio files should be placed in the `public/audio/` directory
+   - Run `./regenerate-index.sh` to update the file index after adding new files
    - Files are automatically discovered and displayed on the home page
    - Click on any sermon from the home page to view it
+
+3. **Adding New Files:**
+   - For markdown files: Add them to `public/markdown/` and run `./regenerate-index.sh`
+   - For audio files: Add them to `public/audio/` and reference them in markdown using `[audio:/audio/filename.mp3]`
+   - Generated audio files are automatically saved to `public/audio/`
 
 ## Netlify Deployment
 
