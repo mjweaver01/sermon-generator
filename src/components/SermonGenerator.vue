@@ -322,7 +322,20 @@ const saveToFile = async () => {
 
       alert('Sermon saved to Netlify Blobs and downloaded successfully!')
     } else {
-      // Save locally (download only)
+      // Save to local public/markdown folder
+      const result = await storageService.saveSermon(
+        filename.value,
+        generatedSermon.value,
+        'local'
+      )
+
+      if (!result.success) {
+        throw new Error(
+          result.error || 'Failed to save to public/markdown folder'
+        )
+      }
+
+      // Also create a download for the user
       const blob = new Blob([generatedSermon.value], { type: 'text/markdown' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -336,7 +349,7 @@ const saveToFile = async () => {
       URL.revokeObjectURL(url)
 
       alert(
-        `Sermon downloaded successfully!\n\nTo add it to your local sermon list:\nRun: ./scripts/add-local-sermon.sh ${filename.value.endsWith('.md') ? filename.value : filename.value + '.md'}`
+        'Sermon saved to public/markdown folder and downloaded successfully!'
       )
     }
   } catch (err: any) {
@@ -686,6 +699,9 @@ const onAudioGenerated = async (audioUrl: string) => {
   padding: 2rem;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .result-header h2 {
