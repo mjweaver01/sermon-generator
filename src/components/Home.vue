@@ -17,8 +17,7 @@
           <div class="action-icon">🎯</div>
           <h3>Generate New Sermon</h3>
           <p>
-            Create a personalized sermon using AI - ask questions, get guidance,
-            and save as markdown
+            Create a personalized sermon using AI - ask questions, get guidance
           </p>
           <div class="action-arrow">→</div>
         </div>
