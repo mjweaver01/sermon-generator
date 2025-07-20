@@ -152,7 +152,11 @@ const onStorageLocationChange = () => {
 const openMarkdown = (filename: string) => {
   // Remove .md extension from the filename for cleaner URLs
   const nameWithoutExtension = filename.replace('.md', '')
-  router.push(`/markdown/${nameWithoutExtension}`)
+  // Pass storage location as query parameter
+  router.push({
+    path: `/markdown/${nameWithoutExtension}`,
+    query: { storage: storageLocation.value },
+  })
 }
 
 const goToGenerator = () => {

@@ -50,16 +50,19 @@
 
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue'
+import { storageService, type StorageLocation } from '../services/storage'
 
 interface Props {
   markdownText: string
   filename?: string
   streamingInProgress?: boolean
+  storageLocation?: StorageLocation
 }
 
 const props = withDefaults(defineProps<Props>(), {
   filename: 'sermon',
   streamingInProgress: false,
+  storageLocation: 'local',
 })
 
 interface Emits {
@@ -113,8 +116,34 @@ const generateAudio = async () => {
     }
     audioUrl.value = URL.createObjectURL(audioBlob)
 
-    // Emit the server-saved audio URL for the shortcode (not the blob URL)
-    emit('audioGenerated', responseData.audioUrl)
+    // If storage location is Netlify, also save to Netlify Blobs
+    let finalAudioUrl = responseData.audioUrl
+    if (props.storageLocation === 'netlify') {
+      try {
+        const audioFilename = `audio_${Date.now()}_${selectedVoice.value}.mp3`
+        const saveResult = await storageService.saveAudio(
+          audioFilename,
+          audioBufferArray.buffer,
+          'netlify'
+        )
+
+        if (saveResult.success) {
+          console.log('Audio saved to Netlify Blobs successfully')
+          // Use a Netlify Blobs URL pattern for the shortcode
+          finalAudioUrl = `/api/storage?operation=get&store=audio&key=${encodeURIComponent(audioFilename)}`
+        } else {
+          console.warn(
+            'Failed to save audio to Netlify Blobs:',
+            saveResult.error
+          )
+        }
+      } catch (storageError) {
+        console.warn('Error saving audio to Netlify Blobs:', storageError)
+      }
+    }
+
+    // Emit the audio URL for the shortcode
+    emit('audioGenerated', finalAudioUrl)
   } catch (err: any) {
     error.value = err.message || 'Failed to generate audio'
     console.error('Error generating audio:', err)

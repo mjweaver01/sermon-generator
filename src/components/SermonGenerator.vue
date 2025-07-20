@@ -118,6 +118,7 @@
               :markdownText="generatedSermon"
               :filename="filename"
               :streamingInProgress="loading"
+              :storageLocation="storageLocation"
               @audioGenerated="onAudioGenerated"
             />
           </div>

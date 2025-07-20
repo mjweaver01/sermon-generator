@@ -19,24 +19,47 @@
             </h1>
           </div>
           <div class="header-actions">
-            <!-- <div class="storage-selector">
-              <select
-                v-model="storageLocation"
-                @change="onStorageLocationChange"
-                class="storage-select"
-              >
-                <option value="local">Local Files (public/markdown/)</option>
-                <option value="netlify">Netlify Blobs (cloud)</option>
-              </select>
-            </div> -->
-            <button @click="viewRaw" class="action-btn raw-btn">
-              <span class="btn-icon">🥩</span>
-              View Raw
-            </button>
-            <button @click="downloadFile" class="action-btn download-btn">
-              <span class="btn-icon">📥</span>
-              Download
-            </button>
+            <div class="dropdown" ref="dropdown">
+              <button @click="toggleDropdown" class="dropdown-trigger">
+                <span class="btn-icon">⚙️</span>
+                Actions
+                <span class="dropdown-arrow" :class="{ open: isDropdownOpen }"
+                  >▼</span
+                >
+              </button>
+              <div v-show="isDropdownOpen" class="dropdown-menu">
+                <div class="dropdown-section">
+                  <label class="dropdown-label">Storage Location:</label>
+                  <select
+                    v-model="storageLocation"
+                    @change="onStorageLocationChange"
+                    class="dropdown-storage-select"
+                  >
+                    <option value="local">
+                      Local Files (public/markdown/)
+                    </option>
+                    <option value="netlify">Netlify Blobs (cloud)</option>
+                  </select>
+                </div>
+                <div class="dropdown-divider"></div>
+                <button @click="handleViewRaw" class="dropdown-item">
+                  <span class="dropdown-icon">🥩</span>
+                  View Raw
+                </button>
+                <button @click="handleDownloadFile" class="dropdown-item">
+                  <span class="dropdown-icon">📥</span>
+                  Download
+                </button>
+                <button
+                  @click="handleDeleteFile"
+                  class="dropdown-item delete-item"
+                  v-if="storageLocation === 'netlify'"
+                >
+                  <span class="dropdown-icon">🗑️</span>
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -58,8 +81,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, nextTick, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted, computed, nextTick, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { marked } from 'marked'
 import { emojiExtension } from '../marked-emoji'
 import { storageService, type StorageLocation } from '../services/storage'
@@ -70,11 +93,17 @@ interface Props {
 
 const props = defineProps<Props>()
 const router = useRouter()
+const route = useRoute()
 
 const markdownContent = ref('')
 const loading = ref(true)
 const error = ref('')
-const storageLocation = ref<StorageLocation>('local')
+const isDropdownOpen = ref(false)
+const dropdown = ref<HTMLElement>()
+// Initialize storage location from URL query parameter or default to 'local'
+const storageLocation = ref<StorageLocation>(
+  (route.query.storage as StorageLocation) || 'local'
+)
 
 marked.use({ extensions: [emojiExtension] })
 
@@ -180,6 +209,33 @@ const downloadFile = () => {
   URL.revokeObjectURL(url)
 }
 
+const deleteFile = async () => {
+  if (storageLocation.value !== 'netlify') return
+
+  const confirmDelete = confirm(
+    `Are you sure you want to delete "${props.filename}" from Netlify Blobs? This action cannot be undone.`
+  )
+  if (!confirmDelete) return
+
+  try {
+    const result = await storageService.deleteFromNetlify(
+      props.filename.endsWith('.md') ? props.filename : `${props.filename}.md`,
+      'sermons'
+    )
+
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to delete sermon')
+    }
+
+    alert('Sermon deleted successfully!')
+    goBack() // Navigate back to home
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    alert(`Failed to delete sermon: ${errorMessage}`)
+    console.error('Error deleting sermon:', err)
+  }
+}
+
 const loadMarkdown = async () => {
   try {
     loading.value = true
@@ -212,6 +268,38 @@ const onStorageLocationChange = () => {
   loadMarkdown()
 }
 
+// Dropdown functions
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value
+}
+
+const closeDropdown = () => {
+  isDropdownOpen.value = false
+}
+
+// Wrapper functions that close dropdown after action
+const handleViewRaw = () => {
+  closeDropdown()
+  viewRaw()
+}
+
+const handleDownloadFile = () => {
+  closeDropdown()
+  downloadFile()
+}
+
+const handleDeleteFile = () => {
+  closeDropdown()
+  deleteFile()
+}
+
+// Click outside to close dropdown
+const handleClickOutside = (event: Event) => {
+  if (dropdown.value && !dropdown.value.contains(event.target as Node)) {
+    closeDropdown()
+  }
+}
+
 // Watch for changes in rendered markdown and process h1 elements
 watch(renderedMarkdown, async () => {
   if (renderedMarkdown.value) {
@@ -222,6 +310,11 @@ watch(renderedMarkdown, async () => {
 
 onMounted(() => {
   loadMarkdown()
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>
 
@@ -249,7 +342,7 @@ onMounted(() => {
   padding: 2rem;
   margin-bottom: 0;
   box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .header-background {
@@ -312,51 +405,23 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 1rem;
+  position: relative;
 }
 
-.storage-selector {
-  display: flex;
-  align-items: center;
+/* Dropdown Styles */
+.dropdown {
+  position: relative;
 }
 
-.storage-select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 120px;
-}
-
-.storage-select:focus {
-  outline: none;
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-}
-
-.storage-select:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.storage-select option {
-  background: #667eea;
-  color: white;
-}
-
-.action-btn {
+.dropdown-trigger {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 12px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -365,18 +430,99 @@ onMounted(() => {
   white-space: nowrap;
 }
 
-.action-btn:hover {
+.dropdown-trigger:hover {
   background: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.raw-btn:hover {
-  background: rgba(255, 193, 7, 0.2);
+.dropdown-arrow {
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
 }
 
-.download-btn:hover {
-  background: rgba(40, 167, 69, 0.2);
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  min-width: 250px;
+  z-index: 1000;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.dropdown-section {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dropdown-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.dropdown-storage-select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.dropdown-storage-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.dropdown-item {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background: #f8fafc;
+}
+
+.dropdown-item.delete-item:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.dropdown-icon {
+  font-size: 1rem;
 }
 
 .btn-icon {
@@ -724,6 +870,17 @@ onMounted(() => {
     justify-content: center;
   }
 
+  .dropdown-trigger {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dropdown-menu {
+    left: 0;
+    right: 0;
+    min-width: auto;
+  }
+
   .content {
     padding: 2rem 1rem;
   }
@@ -751,11 +908,6 @@ onMounted(() => {
     margin: 1.5rem 0;
   }
 
-  .header-actions button {
-    width: 100%;
-  }
-
-  .action-btn,
   .back-btn {
     font-size: 0.85rem;
     padding: 0.6rem 1rem;
@@ -771,7 +923,7 @@ onMounted(() => {
     gap: 0.75rem;
   }
 
-  .action-btn,
+  .dropdown-trigger,
   .back-btn {
     width: 100%;
     justify-content: center;
