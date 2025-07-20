@@ -95,7 +95,7 @@
                 <select
                   id="save-storage-location"
                   v-model="storageLocation"
-                  class="storage-select"
+                  class="select select--large"
                   :disabled="saving"
                 >
                   <option value="local">Download Locally</option>
@@ -668,6 +668,7 @@ const onAudioGenerated = async (audioUrl: string) => {
   border: 1px solid #e5e7eb;
   animation: slideInUp 0.6s ease-out;
   max-height: calc(100vh - 14em);
+  overflow-y: auto;
 }
 
 @keyframes slideInUp {
@@ -712,30 +713,6 @@ const onAudioGenerated = async (audioUrl: string) => {
   color: #64748b;
   font-size: 0.9rem;
   white-space: nowrap;
-}
-
-.storage-select {
-  padding: 0.5rem 0.75rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 140px;
-}
-
-.storage-select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.storage-select:disabled {
-  background-color: #f1f5f9;
-  cursor: not-allowed;
-  opacity: 0.7;
 }
 
 .filename-group {
@@ -812,16 +789,12 @@ const onAudioGenerated = async (audioUrl: string) => {
   box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2);
 }
 
-.sermon-preview {
-  overflow-y: auto;
-  padding: 3rem;
-}
-
 .markdown-content {
   line-height: 1.8;
   color: #374151;
   font-family: 'Crimson Text', Georgia, serif;
   font-size: 1.1rem;
+  padding: 3rem;
 }
 
 /* Enhanced styles for rendered markdown - matching MarkdownViewer */

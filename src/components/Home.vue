@@ -65,7 +65,7 @@
             id="storage-location"
             v-model="storageLocation"
             @change="onStorageLocationChange"
-            class="storage-select"
+            class="select select--large"
           >
             <option value="local">Local Files (public/markdown/)</option>
             <option value="netlify">Netlify Blobs (cloud)</option>
@@ -349,28 +349,6 @@ onMounted(() => {
   font-weight: 500;
   color: #64748b;
   font-size: 0.9rem;
-}
-
-.storage-select {
-  padding: 0.5rem 0.75rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 140px;
-}
-
-.storage-select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.storage-select:hover {
-  border-color: #cbd5e1;
 }
 
 .section-divider {

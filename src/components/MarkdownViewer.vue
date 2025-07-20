@@ -33,7 +33,7 @@
                   <select
                     v-model="storageLocation"
                     @change="onStorageLocationChange"
-                    class="dropdown-storage-select"
+                    class="select select--large"
                   >
                     <option value="local">
                       Local Files (public/markdown/)
@@ -469,25 +469,6 @@ onUnmounted(() => {
   font-weight: 600;
   color: #374151;
   margin-bottom: 0.5rem;
-}
-
-.dropdown-storage-select {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  background: white;
-  color: #374151;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-
-.dropdown-storage-select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .dropdown-divider {

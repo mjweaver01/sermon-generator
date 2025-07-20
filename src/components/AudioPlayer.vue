@@ -6,7 +6,7 @@
         <select
           id="voice-select"
           v-model="selectedVoice"
-          class="voice-select"
+          class="select"
           :disabled="generatingAudio || props.streamingInProgress"
         >
           <option disabled>AI Voice</option>
@@ -206,35 +206,15 @@ watch(
   min-width: 150px;
 }
 
+.voice-selection .select {
+  flex: 1;
+}
+
 .voice-selection label {
   font-weight: 600;
   color: #374151;
   font-size: 0.95rem;
   white-space: nowrap;
-}
-
-.voice-select {
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 1;
-}
-
-.voice-select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.voice-select:disabled {
-  background-color: #f1f5f9;
-  cursor: not-allowed;
-  opacity: 0.7;
 }
 
 .audio-generate-btn {
