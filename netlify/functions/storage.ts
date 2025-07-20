@@ -1,5 +1,7 @@
 import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
 import { getStore } from '@netlify/blobs'
+import * as fs from 'fs'
+import * as path from 'path'
 
 // Types for our storage system
 interface StorageItem {
@@ -187,6 +189,76 @@ const storageOperations = {
   },
 }
 
+// Local file system operations
+const localOperations = {
+  // Save content to local public/markdown folder
+  async saveSermon(
+    filename: string,
+    content: string
+  ): Promise<StorageResponse> {
+    try {
+      // Ensure filename ends with .md
+      const key = filename.endsWith('.md') ? filename : `${filename}.md`
+
+      // Get the absolute path to public/markdown
+      const publicDir = path.join(process.cwd(), 'public', 'markdown')
+      const filePath = path.join(publicDir, key)
+
+      // Ensure the directory exists
+      if (!fs.existsSync(publicDir)) {
+        fs.mkdirSync(publicDir, { recursive: true })
+      }
+
+      // Write the file
+      fs.writeFileSync(filePath, content, 'utf8')
+
+      // Regenerate the index.json
+      await localOperations.regenerateIndex()
+
+      return {
+        success: true,
+        data: {
+          source: 'local',
+          key,
+          message: `Sermon saved to public/markdown/${key}`,
+        },
+      }
+    } catch (error) {
+      console.error('Error saving sermon locally:', error)
+      return {
+        success: false,
+        error: 'Failed to save sermon to local filesystem',
+      }
+    }
+  },
+
+  // Regenerate the index.json file
+  async regenerateIndex(): Promise<void> {
+    try {
+      const publicDir = path.join(process.cwd(), 'public', 'markdown')
+      const indexPath = path.join(publicDir, 'index.json')
+
+      // Read all .md files in the directory
+      if (!fs.existsSync(publicDir)) {
+        fs.mkdirSync(publicDir, { recursive: true })
+      }
+
+      const files = fs
+        .readdirSync(publicDir)
+        .filter(file => file.endsWith('.md') && file !== 'index.json')
+        .sort()
+
+      // Write the index.json file
+      fs.writeFileSync(indexPath, JSON.stringify(files, null, 2), 'utf8')
+
+      console.log('Index regenerated successfully with files:', files)
+    } catch (error) {
+      console.error('Error regenerating index:', error)
+      throw error
+    }
+  },
+}
+
 // Common headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -219,6 +291,37 @@ export const handler: Handler = async (event, context) => {
     let result: StorageResponse
 
     switch (operation) {
+      case 'save-local':
+        if (event.httpMethod !== 'POST') {
+          return {
+            statusCode: 405,
+            headers: corsHeaders,
+            body: JSON.stringify({ error: 'Method not allowed' }),
+          }
+        }
+
+        if (!event.body) {
+          return {
+            statusCode: 400,
+            headers: corsHeaders,
+            body: JSON.stringify({ error: 'Request body is required' }),
+          }
+        }
+
+        const { content: localContent, filename } = JSON.parse(event.body)
+        if (!filename || !localContent) {
+          return {
+            statusCode: 400,
+            headers: corsHeaders,
+            body: JSON.stringify({
+              error: 'Filename and content are required',
+            }),
+          }
+        }
+
+        result = await localOperations.saveSermon(filename, localContent)
+        break
+
       case 'save':
         if (event.httpMethod !== 'POST') {
           return {

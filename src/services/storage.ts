@@ -196,6 +196,31 @@ class StorageService {
   }
 
   /**
+   * Save content to local filesystem (public/markdown folder)
+   */
+  async saveToLocal(
+    filename: string,
+    content: string
+  ): Promise<StorageResponse> {
+    try {
+      const response = await fetch(`${this.baseUrl}?operation=save-local`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ filename, content }),
+      })
+
+      return await response.json()
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }
+    }
+  }
+
+  /**
    * Save a markdown sermon with explicit location choice
    */
   async saveSermon(
@@ -208,16 +233,8 @@ class StorageService {
     if (location === 'netlify') {
       return this.saveToNetlify(key, content, 'text/markdown', 'sermons')
     } else {
-      // For local saving, we can only provide download functionality
-      // since browsers can't write to public folders directly
-      return {
-        success: true,
-        data: {
-          message: 'Local save requires manual download',
-          downloadContent: content,
-          filename: key,
-        },
-      }
+      // Save directly to local filesystem via server-side function
+      return this.saveToLocal(key, content)
     }
   }
 
