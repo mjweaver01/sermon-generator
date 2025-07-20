@@ -528,12 +528,6 @@ onUnmounted(() => {
   font-size: 1.1rem;
 }
 
-.content {
-  padding: 3rem 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
 .loading {
   text-align: center;
   padding: 4rem 2rem;
@@ -878,10 +872,6 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     min-width: auto;
-  }
-
-  .content {
-    padding: 2rem 1rem;
   }
 
   .audio-section {

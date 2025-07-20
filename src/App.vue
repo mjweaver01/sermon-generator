@@ -23,4 +23,17 @@ body {
 #app {
   min-height: 100vh;
 }
+
+/* Shared content styles used by multiple components */
+.content {
+  padding: 3rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 2rem 1rem;
+  }
+}
 </style>

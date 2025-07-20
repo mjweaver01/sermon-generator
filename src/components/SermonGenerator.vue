@@ -109,7 +109,7 @@
               >
                 <span v-if="saving" class="loading-spinner-btn"></span>
                 <span class="btn-icon">{{ saving ? '⏳' : '💾' }}</span>
-                {{ saving ? 'Saving...' : 'Save as Markdown' }}
+                {{ saving ? 'Saving...' : 'Save' }}
               </button>
             </div>
 
@@ -449,12 +449,6 @@ const onAudioGenerated = async (audioUrl: string) => {
 
 .btn-icon {
   font-size: 1.1rem;
-}
-
-.content {
-  padding: 3rem 2rem;
-  max-width: 800px;
-  margin: 0 auto;
 }
 
 @media (min-width: 768px) {
@@ -986,10 +980,6 @@ const onAudioGenerated = async (audioUrl: string) => {
 
   .header-spacer {
     display: none;
-  }
-
-  .content {
-    padding: 2rem 1rem;
   }
 
   .generator-form {
