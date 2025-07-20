@@ -19,6 +19,16 @@
             </h1>
           </div>
           <div class="header-actions">
+            <!-- <div class="storage-selector">
+              <select
+                v-model="storageLocation"
+                @change="onStorageLocationChange"
+                class="storage-select"
+              >
+                <option value="local">Local Files (public/markdown/)</option>
+                <option value="netlify">Netlify Blobs (cloud)</option>
+              </select>
+            </div> -->
             <button @click="viewRaw" class="action-btn raw-btn">
               <span class="btn-icon">🥩</span>
               View Raw
@@ -52,6 +62,7 @@ import { ref, onMounted, computed, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { emojiExtension } from '../marked-emoji'
+import { storageService, type StorageLocation } from '../services/storage'
 
 interface Props {
   filename: string
@@ -63,6 +74,7 @@ const router = useRouter()
 const markdownContent = ref('')
 const loading = ref(true)
 const error = ref('')
+const storageLocation = ref<StorageLocation>('local')
 
 marked.use({ extensions: [emojiExtension] })
 
@@ -138,7 +150,17 @@ const goBack = () => {
 }
 
 const viewRaw = () => {
-  window.open(`/markdown/${props.filename}.md`, '_blank')
+  if (!markdownContent.value) return
+
+  // Create a blob URL for the raw content
+  const blob = new Blob([markdownContent.value], { type: 'text/markdown' })
+  const url = URL.createObjectURL(blob)
+  const newWindow = window.open(url, '_blank')
+
+  // Clean up the blob URL after a short delay
+  setTimeout(() => {
+    URL.revokeObjectURL(url)
+  }, 1000)
 }
 
 const downloadFile = () => {
@@ -163,18 +185,31 @@ const loadMarkdown = async () => {
     loading.value = true
     error.value = ''
 
-    // Fetch markdown content directly from public/markdown directory
-    const response = await fetch(`/markdown/${props.filename}.md`)
-    if (!response.ok) {
-      throw new Error(`Failed to load ${props.filename}.md`)
+    // Use storage service with explicit location choice
+    const result = await storageService.getSermon(
+      props.filename,
+      storageLocation.value
+    )
+
+    if (!result.success) {
+      throw new Error(
+        result.error ||
+          `Failed to load ${props.filename} from ${storageLocation.value} storage`
+      )
     }
 
-    markdownContent.value = await response.text()
+    markdownContent.value = result.data?.content || ''
+    console.log(`Loaded sermon from ${storageLocation.value} storage`)
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Unknown error'
   } finally {
     loading.value = false
   }
+}
+
+// Handle storage location change
+const onStorageLocationChange = () => {
+  loadMarkdown()
 }
 
 // Watch for changes in rendered markdown and process h1 elements
@@ -277,6 +312,40 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.storage-selector {
+  display: flex;
+  align-items: center;
+}
+
+.storage-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.storage-select:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.storage-select:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.storage-select option {
+  background: #667eea;
+  color: white;
 }
 
 .action-btn {

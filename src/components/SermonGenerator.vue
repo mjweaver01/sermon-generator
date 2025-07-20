@@ -90,6 +90,18 @@
                 />
                 <span class="file-extension">.md</span>
               </div>
+              <div class="storage-selector">
+                <label for="save-storage-location">Save to:</label>
+                <select
+                  id="save-storage-location"
+                  v-model="storageLocation"
+                  class="storage-select"
+                  :disabled="saving"
+                >
+                  <option value="local">Download Locally</option>
+                  <option value="netlify">Save to Netlify Blobs</option>
+                </select>
+              </div>
               <button
                 @click="saveToFile"
                 :disabled="!filename.trim() || saving"
@@ -124,6 +136,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { marked } from 'marked'
 import AudioPlayer from './AudioPlayer.vue'
+import { storageService, type StorageLocation } from '../services/storage'
 
 // Function to process audio shortcodes
 const processAudioShortcodes = (content: string): string => {
@@ -152,6 +165,7 @@ const filename = ref('')
 const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
+const storageLocation = ref<StorageLocation>('local')
 
 const goBack = () => {
   router.push('/')
@@ -280,26 +294,52 @@ const saveToFile = async () => {
   saving.value = true
 
   try {
-    // Create a blob with the markdown content
-    const blob = new Blob([generatedSermon.value], { type: 'text/markdown' })
+    if (storageLocation.value === 'netlify') {
+      // Save to Netlify Blobs
+      const result = await storageService.saveSermon(
+        filename.value,
+        generatedSermon.value,
+        'netlify'
+      )
 
-    // Create a download link
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    // Use the exact filename, ensuring it ends with .md
-    a.download = filename.value.endsWith('.md')
-      ? filename.value
-      : `${filename.value}.md`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save to Netlify Blobs')
+      }
 
-    // Show success message
-    alert('Sermon saved successfully!')
+      // Also create a download for the user
+      const blob = new Blob([generatedSermon.value], { type: 'text/markdown' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename.value.endsWith('.md')
+        ? filename.value
+        : `${filename.value}.md`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      alert('Sermon saved to Netlify Blobs and downloaded successfully!')
+    } else {
+      // Save locally (download only)
+      const blob = new Blob([generatedSermon.value], { type: 'text/markdown' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename.value.endsWith('.md')
+        ? filename.value
+        : `${filename.value}.md`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      alert(
+        `Sermon downloaded successfully!\n\nTo add it to your local sermon list:\nRun: ./scripts/add-local-sermon.sh ${filename.value.endsWith('.md') ? filename.value : filename.value + '.md'}`
+      )
+    }
   } catch (err: any) {
-    error.value = 'Failed to save file'
+    error.value = err.message || 'Failed to save file'
     console.error('Error saving file:', err)
   } finally {
     saving.value = false
@@ -664,6 +704,43 @@ const onAudioGenerated = async (audioUrl: string) => {
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.storage-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.storage-selector label {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.storage-select {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.storage-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.storage-select:disabled {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .filename-group {

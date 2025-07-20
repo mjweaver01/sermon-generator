@@ -59,6 +59,19 @@
             <div class="file-arrow">→</div>
           </div>
         </div>
+
+        <div class="storage-selector">
+          <label for="storage-location">Storage Location:</label>
+          <select
+            id="storage-location"
+            v-model="storageLocation"
+            @change="onStorageLocationChange"
+            class="storage-select"
+          >
+            <option value="local">Local Files (public/markdown/)</option>
+            <option value="netlify">Netlify Blobs (cloud)</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -67,6 +80,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { storageService, type StorageLocation } from '../services/storage'
 
 const router = useRouter()
 
@@ -80,6 +94,7 @@ interface MarkdownFile {
 const markdownFiles = ref<MarkdownFile[]>([])
 const loading = ref(true)
 const error = ref('')
+const storageLocation = ref<StorageLocation>('local')
 
 // Function to generate display name from filename
 const generateDisplayName = (filename: string): string => {
@@ -95,31 +110,44 @@ const generateDisplayName = (filename: string): string => {
   )
 }
 
-// Load markdown files dynamically using static file access
+// Load markdown files from selected storage location
 const loadMarkdownFiles = async () => {
   try {
     loading.value = true
     error.value = ''
 
-    // Fetch the index of markdown files from the public/markdown directory
-    const indexResponse = await fetch('/markdown/index.json')
-    if (!indexResponse.ok) {
-      throw new Error('Failed to load markdown file index')
+    // Use storage service with explicit location choice
+    const result = await storageService.listSermons(storageLocation.value)
+
+    if (!result.success) {
+      throw new Error(
+        result.error ||
+          `Failed to load sermons from ${storageLocation.value} storage`
+      )
     }
 
-    const filenames = await indexResponse.json()
+    const items = result.data?.items || []
 
-    markdownFiles.value = filenames.map((filename: string) => ({
-      name: filename,
-      display: generateDisplayName(filename),
-      description: `Click to read the ${generateDisplayName(filename).toLowerCase()}`,
+    markdownFiles.value = items.map((item: any) => ({
+      name: item.key,
+      display: generateDisplayName(item.key),
+      description: `Click to read the ${generateDisplayName(item.key).toLowerCase()}`,
     }))
+
+    console.log(
+      `Loaded ${items.length} sermons from ${storageLocation.value} storage`
+    )
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Unknown error'
     console.error('Error loading markdown files:', err)
   } finally {
     loading.value = false
   }
+}
+
+// Handle storage location change
+const onStorageLocationChange = () => {
+  loadMarkdownFiles()
 }
 
 const openMarkdown = (filename: string) => {
@@ -304,6 +332,42 @@ onMounted(() => {
   font-weight: 600;
   color: #334155;
   margin: 0;
+}
+
+.storage-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2rem 0;
+  justify-content: center;
+}
+
+.storage-selector label {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.storage-select {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.storage-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.storage-select:hover {
+  border-color: #cbd5e1;
 }
 
 .section-divider {

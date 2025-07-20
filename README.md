@@ -5,11 +5,27 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
 ## Features
 
 - 🎯 **AI-Powered Sermon Generation**: Ask questions or share concerns to generate personalized sermons
-- 📝 **Markdown Export**: Save generated sermons as markdown files
+- 📝 **Dual Storage Options**: Save locally or to Netlify Blobs cloud storage
 - 📖 **Beautiful Viewer**: Read sermons with a clean, formatted interface
 - 🔍 **Biblical Integration**: Include specific verses and themes in your sermons
 - ⚡ **Streaming Responses**: Real-time sermon generation with streaming support
 - 🌐 **Netlify Edge Functions**: Server-side processing with enhanced performance
+- 🎵 **Audio Generation**: Convert sermons to speech with multiple AI voices
+
+## Storage Options
+
+### Local Files (Default)
+
+- **Reading**: Loads sermons from `public/markdown/` directory
+- **Saving**: Downloads files for manual placement in `public/markdown/`
+- **Helper**: Use `./scripts/add-local-sermon.sh filename.md` to easily add downloaded sermons
+- **Index**: Run `./scripts/regenerate-index.sh` to update the file list
+
+### Netlify Blobs (Cloud)
+
+- **Reading**: Loads sermons from Netlify Blobs storage
+- **Saving**: Directly saves to Netlify Blobs (also downloads locally)
+- **Automatic**: No manual file management required
 
 ## Setup
 
@@ -19,13 +35,27 @@ A Vue.js app for generating personalized sermons using AI and viewing markdown f
    npm install
    ```
 
-2. **Configure OpenAI API:**
+2. **Configure Environment Variables:**
 
-   - For local development, create a `.env` file in the project root:
-     ```
-     OPENAI_API_KEY=your_actual_openai_api_key_here
-     ```
-   - For Netlify deployment, set the environment variable in your Netlify site settings
+   Create a `.env` file in the project root:
+
+   ```bash
+   # Required for sermon and audio generation
+   OPENAI_API_KEY=your_actual_openai_api_key_here
+
+   # Optional: Only needed for Netlify Blobs storage in local development
+   # (Automatically available when deployed to Netlify)
+   NETLIFY_SITE_ID=your_netlify_site_id_here
+   NETLIFY_AUTH_TOKEN=your_netlify_auth_token_here
+   ```
+
+   **For Netlify deployment:** Add these environment variables in your Netlify dashboard under Site Settings > Environment Variables.
+
+   **Note:** If you don't configure Netlify Blobs, the app works perfectly with local file storage only.
+
+   **To get Netlify credentials:**
+   - `NETLIFY_SITE_ID`: Found in your Netlify site dashboard under Site settings > General > Site details
+   - `NETLIFY_AUTH_TOKEN`: Create a personal access token in your Netlify user settings under Personal access tokens
 
 3. **Start development server:**
 
@@ -58,7 +88,6 @@ Generated files are automatically saved to the appropriate public directories an
 ## Usage
 
 1. **Generate a Sermon:**
-
    - Visit the home page and click "Generate New Sermon"
    - Enter your question, concern, or topic
    - Optionally add biblical context or specific verses
@@ -66,7 +95,6 @@ Generated files are automatically saved to the appropriate public directories an
    - Save the result as a markdown file
 
 2. **View Saved Sermons:**
-
    - Place your markdown files in the `public/markdown/` directory
    - Audio files should be placed in the `public/audio/` directory
    - Run `./regenerate-index.sh` to update the file index after adding new files

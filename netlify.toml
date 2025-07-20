@@ -2,6 +2,10 @@
   function = "generate-sermon"
   path = "/api/generate-sermon"
 
+[[edge_functions]]
+  function = "generate-audio"
+  path = "/api/generate-audio"
+
 # Functions configuration
 [functions]
   directory = "netlify/functions"

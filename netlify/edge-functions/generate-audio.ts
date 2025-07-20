@@ -108,7 +108,8 @@ export default async (request: Request) => {
     const timestamp = Date.now()
     const filename = `audio_${timestamp}_${voice}.mp3`
 
-    // Save the audio buffer to public/audio folder
+    // Save the audio buffer to public/audio folder (local development only)
+    // In production, the audio will be saved via the storage API if available
     const audioFilePath = `./public/audio/${filename}`
     try {
       await (globalThis as any).Deno.writeFile(
@@ -117,8 +118,8 @@ export default async (request: Request) => {
       )
       console.log(`Audio saved to: ${audioFilePath}`)
     } catch (writeError: any) {
-      console.error('Error saving audio file:', writeError)
-      // If we can't save the file, we'll still return the buffer but no URL
+      console.error('Error saving audio file locally:', writeError)
+      // Continue anyway since this might be running in production where file writes aren't supported
     }
 
     // Create the URL for the saved audio file (direct public URL)
