@@ -326,7 +326,6 @@ onUnmounted(() => {
 }
 
 .markdown-viewer {
-  max-width: 1000px;
   margin: 0 auto;
   font-family:
     'Inter',

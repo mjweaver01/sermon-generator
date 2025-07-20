@@ -369,7 +369,6 @@ const onAudioGenerated = async (audioUrl: string) => {
 }
 
 .sermon-generator {
-  max-width: 1000px;
   margin: 0 auto;
   font-family:
     'Inter',
@@ -674,6 +673,7 @@ const onAudioGenerated = async (audioUrl: string) => {
   overflow: hidden;
   border: 1px solid #e5e7eb;
   animation: slideInUp 0.6s ease-out;
+  max-height: calc(100vh - 14em);
 }
 
 @keyframes slideInUp {
@@ -819,7 +819,6 @@ const onAudioGenerated = async (audioUrl: string) => {
 }
 
 .sermon-preview {
-  max-height: 600px;
   overflow-y: auto;
   padding: 3rem;
 }
