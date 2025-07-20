@@ -656,6 +656,10 @@ const onAudioGenerated = async (audioUrl: string) => {
   overflow: hidden;
   border: 1px solid #e5e7eb;
   animation: slideInUp 0.6s ease-out;
+}
+
+.result-section,
+.generator-form {
   max-height: calc(100vh - 14em);
   overflow-y: auto;
 }
@@ -675,9 +679,14 @@ const onAudioGenerated = async (audioUrl: string) => {
   padding: 2rem;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   border-bottom: 1px solid #e5e7eb;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+}
+
+@media (min-height: 800px) {
+  .result-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
 }
 
 .result-header h2 {
