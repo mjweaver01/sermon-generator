@@ -556,6 +556,11 @@
     "@netlify/dev-utils" "3.2.0"
     "@netlify/runtime-utils" "2.1.0"
 
+"@netlify/blobs@^8.1.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@netlify/blobs/-/blobs-8.2.0.tgz#4cd6c82cbe7edff8476f67b4d390b08a97f8b210"
+  integrity sha512-9djLZHBKsoKk8XCgwWSEPK9QnT8qqxEQGuYh48gFIcNLvpBKkLnHbDZuyUxmNemCfDz7h0HnMXgSPnnUVgARhg==
+
 "@netlify/build-info@10.0.7":
   version "10.0.7"
   resolved "https://registry.yarnpkg.com/@netlify/build-info/-/build-info-10.0.7.tgz#bfadf992df258c4cc64b5a050220d8dcb4e1d550"
