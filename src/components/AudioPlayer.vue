@@ -6,7 +6,7 @@
         <select
           id="voice-select"
           v-model="selectedVoice"
-          class="select"
+          class="select select--large"
           :disabled="generatingAudio || props.streamingInProgress"
         >
           <option disabled>AI Voice</option>
