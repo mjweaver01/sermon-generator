@@ -82,17 +82,46 @@ const storageOperations = {
   async getContent(key: string, storeName: string): Promise<StorageResponse> {
     try {
       const store = getNetlifyStore(storeName)
-      const blob = await store.get(key, { type: 'text' })
 
-      if (blob) {
-        return {
-          success: true,
-          data: {
-            content: blob,
-            key,
-            source: 'netlify',
-            lastModified: new Date(),
-          },
+      // Handle audio files as binary data
+      if (storeName === 'audio') {
+        const audioBuffer = await store.get(key, { type: 'arrayBuffer' })
+
+        if (audioBuffer) {
+          // Convert ArrayBuffer to base64 for Netlify Functions
+          const uint8Array = new Uint8Array(audioBuffer)
+          const binaryString = Array.from(uint8Array, byte =>
+            String.fromCharCode(byte)
+          ).join('')
+          const base64Content = Buffer.from(binaryString, 'binary').toString(
+            'base64'
+          )
+
+          return {
+            success: true,
+            data: {
+              audioBase64: base64Content,
+              key,
+              source: 'netlify',
+              contentType: 'audio/mpeg',
+              lastModified: new Date(),
+            },
+          }
+        }
+      } else {
+        // Handle text content (sermons) as before
+        const blob = await store.get(key, { type: 'text' })
+
+        if (blob) {
+          return {
+            success: true,
+            data: {
+              content: blob,
+              key,
+              source: 'netlify',
+              lastModified: new Date(),
+            },
+          }
         }
       }
 
@@ -365,6 +394,23 @@ export const handler: Handler = async (event, context) => {
           }
         }
         result = await storageOperations.getContent(key, storeName)
+
+        // Handle audio file streaming with proper headers
+        if (result.success && result.data?.audioBase64) {
+          const audioHeaders: Record<string, string> = {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'audio/mpeg',
+            'Content-Disposition': `inline; filename="${key}"`,
+            'Cache-Control': 'public, max-age=31536000', // Cache for 1 year
+          }
+
+          return {
+            statusCode: 200,
+            headers: audioHeaders,
+            body: result.data.audioBase64,
+            isBase64Encoded: true,
+          }
+        }
         break
 
       case 'list':

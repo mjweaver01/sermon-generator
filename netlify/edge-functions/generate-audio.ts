@@ -1,65 +1,4 @@
 import OpenAI from 'openai'
-import { getStore } from '@netlify/blobs'
-
-// Get Netlify Blobs store with proper configuration
-const getNetlifyStore = (storeName: string) => {
-  // Check if running in Netlify production environment
-  if ((globalThis as any).Netlify) {
-    return getStore(storeName)
-  }
-
-  // For local development, need explicit configuration
-  const siteId = (globalThis as any).Deno?.env?.get('NETLIFY_SITE_ID')
-  const token = (globalThis as any).Deno?.env?.get('NETLIFY_AUTH_TOKEN')
-
-  if (!siteId || !token) {
-    console.warn(
-      'Netlify Blobs requires NETLIFY_SITE_ID and NETLIFY_AUTH_TOKEN environment variables for local development'
-    )
-    return null
-  }
-
-  return getStore({
-    name: storeName,
-    siteID: siteId,
-    token: token,
-  })
-}
-
-// Save audio to Netlify Blobs
-const saveToNetlifyBlobs = async (
-  filename: string,
-  audioBuffer: ArrayBuffer
-): Promise<{ success: boolean; url?: string; error?: string }> => {
-  try {
-    const store = getNetlifyStore('audio')
-    if (!store) {
-      return {
-        success: false,
-        error: 'Netlify Blobs not configured',
-      }
-    }
-
-    // Save the audio buffer to Netlify Blobs
-    await store.set(filename, audioBuffer, {
-      metadata: { contentType: 'audio/mpeg' },
-    })
-
-    // Return the public URL for the blob
-    const blobUrl = `${(globalThis as any).Deno?.env?.get('URL') || 'https://your-site.netlify.app'}/.netlify/blobs/serve/audio/${filename}`
-
-    return {
-      success: true,
-      url: blobUrl,
-    }
-  } catch (error) {
-    console.error('Error saving to Netlify Blobs:', error)
-    return {
-      success: false,
-      error: 'Failed to save to Netlify Blobs',
-    }
-  }
-}
 
 export default async (request: Request) => {
   // Handle CORS preflight
@@ -169,43 +108,22 @@ export default async (request: Request) => {
     const timestamp = Date.now()
     const filename = `audio_${timestamp}_${voice}.mp3`
 
-    // Try to save to Netlify Blobs first (for production)
-    let audioUrl = `/audio/${filename}` // Default fallback URL
-    let savedToBlobs = false
+    // Save to local file system (for development)
+    const audioUrl = `/audio/${filename}`
+    const audioFilePath = `./public/audio/${filename}`
 
     try {
-      const blobResult = await saveToNetlifyBlobs(filename, audioBuffer)
-      if (blobResult.success && blobResult.url) {
-        audioUrl = blobResult.url
-        savedToBlobs = true
-        console.log(`Audio saved to Netlify Blobs: ${filename}`)
-      } else {
-        console.warn('Failed to save to Netlify Blobs:', blobResult.error)
-      }
-    } catch (blobError) {
-      console.warn('Error saving to Netlify Blobs:', blobError)
-    }
-
-    // Save to local file system (for development or as fallback)
-    if (!savedToBlobs || !(globalThis as any).Netlify) {
-      const audioFilePath = `./public/audio/${filename}`
-      try {
-        await (globalThis as any).Deno.writeFile(
-          audioFilePath,
-          new Uint8Array(audioBuffer)
-        )
-        console.log(`Audio saved locally to: ${audioFilePath}`)
-        // Use local URL if not saved to blobs
-        if (!savedToBlobs) {
-          audioUrl = `/audio/${filename}`
-        }
-      } catch (writeError: any) {
-        console.error('Error saving audio file locally:', writeError)
-        // If both blob and local saving failed, this is a problem
-        if (!savedToBlobs) {
-          throw new Error('Failed to save audio file to any storage location')
-        }
-      }
+      await (globalThis as any).Deno.writeFile(
+        audioFilePath,
+        new Uint8Array(audioBuffer)
+      )
+      console.log(`Audio saved locally to: ${audioFilePath}`)
+    } catch (writeError: any) {
+      console.error('Error saving audio file locally:', writeError)
+      // For production, this is not critical since AudioPlayer handles Netlify storage
+      console.warn(
+        'Local save failed, but AudioPlayer will handle Netlify storage'
+      )
     }
 
     return new Response(
